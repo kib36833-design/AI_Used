@@ -55,8 +55,10 @@ AI 解析需要在 Claude 對話視窗中開啟才能連線。離線時改按「
 
 ## 線上版（手機直接開網址）
 
-`main` 分支有變更時，`.github/workflows/pages.yml` 會自動把本 repo 發佈到 GitHub Pages：
+在 GitHub 上啟用一次 Pages 即可（只需做一次）：
 
-<https://kib36833-design.github.io/AI_Used/>
+**Settings → Pages → Build and deployment → Source 選「Deploy from a branch」→ Branch 選 `main` / `(root)` → Save**
 
-手機用瀏覽器開啟後選「加入主畫面」即成為 App。資料存在該裝置瀏覽器的本機儲存區（各裝置獨立），換機時用「💾 匯出備份 → 📂 匯入備份」搬移。
+約 1 分鐘後網站上線：<https://kib36833-design.github.io/AI_Used/>
+
+之後只要 `main` 有更新，GitHub 會自動重新發佈。手機用瀏覽器開啟後選「加入主畫面」即成為 App。資料存在該裝置瀏覽器的本機儲存區（各裝置獨立），換機時用「💾 匯出備份 → 📂 匯入備份」搬移。
