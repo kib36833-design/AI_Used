@@ -1,0 +1,862 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>上海地鐵立體路網</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700&family=Noto+Sans+TC:wght@400;500;700&display=swap">
+<style>
+  :root{
+    --bg:#E9EDF0;
+    --panel:#FBFCFD;
+    --panel-2:#F1F4F6;
+    --ink:#15202B;
+    --ink-2:#4D5B69;
+    --ink-3:#7F8B97;
+    --rule:#D6DDE3;
+    --accent:#1E4F86;
+    --accent-ink:#FFFFFF;
+    --focus:#2F7BD1;
+    --scene:#E3E8EC;
+    --ground:#DCE2E7;
+    --grid:#C4CDD5;
+    --river:#AFCBE0;
+    --node:#FFFFFF;
+    --pillar:#3B4652;
+    --label-bg:rgba(251,252,253,.92);
+    --shadow:0 1px 2px rgba(21,32,43,.08),0 6px 20px rgba(21,32,43,.08);
+    --warn:#A15C00;
+    --font:"Noto Sans TC","PingFang TC","Microsoft JhengHei",system-ui,sans-serif;
+    --num:"Barlow Condensed","Arial Narrow","Noto Sans TC",sans-serif;
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      color-scheme:dark;
+      --bg:#0C1319;--panel:#121B23;--panel-2:#18232D;--ink:#E4EBF1;--ink-2:#9AA9B7;--ink-3:#6C7C8B;
+      --rule:#243240;--accent:#7EB0E6;--accent-ink:#0C1319;--focus:#8CC0F5;
+      --scene:#0B1218;--ground:#0F1820;--grid:#1C2833;--river:#173650;--node:#E9EEF2;--pillar:#8A99A8;
+      --label-bg:rgba(18,27,35,.9);--shadow:0 1px 2px rgba(0,0,0,.4),0 8px 24px rgba(0,0,0,.35);--warn:#E0A64A;
+    }
+  }
+  :root[data-theme="dark"]{
+    color-scheme:dark;
+    --bg:#0C1319;--panel:#121B23;--panel-2:#18232D;--ink:#E4EBF1;--ink-2:#9AA9B7;--ink-3:#6C7C8B;
+    --rule:#243240;--accent:#7EB0E6;--accent-ink:#0C1319;--focus:#8CC0F5;
+    --scene:#0B1218;--ground:#0F1820;--grid:#1C2833;--river:#173650;--node:#E9EEF2;--pillar:#8A99A8;
+    --label-bg:rgba(18,27,35,.9);--shadow:0 1px 2px rgba(0,0,0,.4),0 8px 24px rgba(0,0,0,.35);--warn:#E0A64A;
+  }
+  html,body{height:100%}
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--font);font-size:14px;line-height:1.5;overflow:hidden}
+  button,input{font:inherit;color:inherit}
+  :focus-visible{outline:2px solid var(--focus);outline-offset:2px}
+
+  .app{display:grid;grid-template-columns:minmax(320px,390px) 1fr;height:100%}
+  .panel{background:var(--panel);border-right:1px solid var(--rule);display:flex;flex-direction:column;min-height:0;z-index:2}
+  .panel-scroll{overflow-y:auto;padding:20px 20px 28px;display:flex;flex-direction:column;gap:18px;min-height:0;flex:1}
+  .stage{position:relative;min-width:0;min-height:0;background:var(--scene);overflow:hidden}
+  #gl{position:absolute;inset:0;display:block;width:100%;height:100%;touch-action:none;cursor:grab}
+  #gl:active{cursor:grabbing}
+
+  header.brand{display:flex;flex-direction:column;gap:4px}
+  .brand-row{display:flex;align-items:center;gap:10px}
+  .logo{width:30px;height:30px;border-radius:50%;border:3px solid #E3002B;display:grid;place-items:center;flex:none}
+  .logo::after{content:"";width:14px;height:3px;background:#E3002B;border-radius:2px}
+  h1{font-size:20px;margin:0;letter-spacing:.04em;text-wrap:balance}
+  .sub{margin:0;color:var(--ink-2);font-size:13px}
+
+  .eyebrow{font-size:12px;color:var(--ink-3);letter-spacing:.12em;margin:0 0 8px}
+  .presets{display:flex;flex-direction:column;gap:10px}
+  .preset-group{display:flex;flex-direction:column;gap:6px}
+  .preset-group h3{margin:0;font-size:12px;font-weight:500;color:var(--ink-2)}
+  .chips{display:flex;flex-wrap:wrap;gap:6px}
+  .chip{border:1px solid var(--rule);background:var(--panel-2);border-radius:999px;padding:5px 11px;font-size:13px;cursor:pointer;white-space:nowrap}
+  .chip:hover{border-color:var(--accent)}
+  .chip[aria-pressed="true"]{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
+
+  .od{display:grid;grid-template-columns:1fr auto;gap:8px;align-items:center}
+  .od-fields{display:flex;flex-direction:column;gap:8px;position:relative}
+  .field{position:relative;display:flex;align-items:center;gap:8px;background:var(--panel-2);border:1px solid var(--rule);border-radius:10px;padding:0 10px}
+  .field:focus-within{border-color:var(--focus)}
+  .field .tag{font-size:12px;color:var(--ink-3);flex:none;width:28px}
+  .field input{border:0;background:transparent;padding:10px 0;flex:1;min-width:0;outline:none;font-size:15px}
+  .dot{width:10px;height:10px;border-radius:50%;flex:none}
+  .dot.o{background:transparent;border:3px solid #16A34A}
+  .dot.d{background:transparent;border:3px solid #DC2626}
+  .swap{width:36px;height:36px;border-radius:50%;border:1px solid var(--rule);background:var(--panel);cursor:pointer;display:grid;place-items:center}
+  .swap:hover{border-color:var(--accent)}
+  .suggest{position:absolute;left:0;right:0;top:calc(100% + 4px);background:var(--panel);border:1px solid var(--rule);border-radius:10px;box-shadow:var(--shadow);max-height:260px;overflow-y:auto;z-index:20;padding:4px}
+  .suggest button{display:flex;width:100%;align-items:center;gap:8px;border:0;background:transparent;padding:8px;border-radius:6px;text-align:left;cursor:pointer}
+  .suggest button:hover,.suggest button.act{background:var(--panel-2)}
+  .suggest .nm{flex:1}
+  .suggest .al{color:var(--ink-3);font-size:12px}
+  .hint{font-size:12px;color:var(--ink-3);margin:0}
+
+  .badge{display:inline-grid;place-items:center;min-width:24px;height:22px;padding:0 5px;border-radius:5px;font-family:var(--num);font-weight:700;font-size:15px;line-height:1;letter-spacing:.02em}
+  .badge.txt{font-family:var(--font);font-size:11px;font-weight:700;padding:0 6px}
+  .badges{display:inline-flex;gap:3px;flex-wrap:wrap}
+
+  .opts{display:flex;gap:6px;flex-wrap:wrap}
+  .opt{flex:1 1 0;min-width:96px;border:1px solid var(--rule);background:var(--panel);border-radius:10px;padding:8px 10px;text-align:left;cursor:pointer;display:flex;flex-direction:column;gap:2px}
+  .opt:hover{border-color:var(--accent)}
+  .opt[aria-pressed="true"]{border-color:var(--accent);box-shadow:inset 0 0 0 1px var(--accent)}
+  .opt .k{font-size:12px;color:var(--ink-2)}
+  .opt .v{font-family:var(--num);font-size:20px;font-weight:700;line-height:1.1}
+  .opt .v small{font-family:var(--font);font-size:12px;font-weight:500;color:var(--ink-2);margin-left:2px}
+
+  .summary{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--rule);border:1px solid var(--rule);border-radius:10px;overflow:hidden}
+  .summary div{background:var(--panel);padding:8px 10px;display:flex;flex-direction:column}
+  .summary .k{font-size:11px;color:var(--ink-3);letter-spacing:.06em}
+  .summary .v{font-family:var(--num);font-size:22px;font-weight:700;font-variant-numeric:tabular-nums;line-height:1.15}
+  .summary .v small{font-family:var(--font);font-size:11px;font-weight:500;color:var(--ink-2);margin-left:2px}
+
+  .steps{list-style:none;margin:0;padding:0;display:flex;flex-direction:column}
+  .stop{display:grid;grid-template-columns:22px 1fr;gap:10px;position:relative}
+  .stop .rail{position:relative;display:flex;justify-content:center}
+  .stop .rail::before{content:"";position:absolute;top:0;bottom:0;width:6px;border-radius:3px;background:var(--c,transparent)}
+  .stop.first .rail::before{top:10px}
+  .stop.last .rail::before{bottom:calc(100% - 12px)}
+  .stop .pin{position:relative;margin-top:4px;width:16px;height:16px;border-radius:50%;background:var(--panel);border:3px solid var(--ink);z-index:1}
+  .stop.xfer .pin{border-color:var(--ink);width:18px;height:18px;margin-top:3px}
+  .stop .body{padding-bottom:14px;min-width:0}
+  .stop .st{font-weight:700;font-size:15px;display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+  .stop .act{font-size:12px;font-weight:500;color:var(--ink-2);border:1px solid var(--rule);border-radius:4px;padding:0 5px}
+  .ride{margin-top:6px;background:var(--panel-2);border-radius:8px;padding:8px 10px;display:flex;flex-direction:column;gap:4px}
+  .ride .dir{display:flex;align-items:center;gap:6px;flex-wrap:wrap;font-size:13px}
+  .ride .meta{font-size:12px;color:var(--ink-2);font-variant-numeric:tabular-nums}
+  .ride details summary{cursor:pointer;font-size:12px;color:var(--accent);list-style:none}
+  .ride details summary::-webkit-details-marker{display:none}
+  .ride details ol{margin:4px 0 0;padding-left:18px;font-size:12px;color:var(--ink-2);columns:2;column-gap:14px}
+  .walk{font-size:12px;color:var(--warn);margin-top:4px}
+  .note{font-size:12px;color:var(--ink-3);margin:0;line-height:1.6}
+  .empty{color:var(--ink-2);font-size:13px;background:var(--panel-2);border-radius:10px;padding:12px}
+
+  .legend{display:flex;flex-wrap:wrap;gap:5px}
+  .legend button{border:0;padding:0;background:transparent;cursor:pointer;border-radius:5px}
+  .legend button[aria-pressed="false"] .badge{opacity:.25}
+
+  /* 3D 畫面疊加 */
+  .labels{position:absolute;inset:0;pointer-events:none;overflow:hidden}
+  .lbl{position:absolute;left:0;top:0;white-space:nowrap;font-size:12px;line-height:1;padding:3px 6px;border-radius:4px;background:var(--label-bg);color:var(--ink);transform-origin:0 0;pointer-events:auto;cursor:pointer;border:1px solid var(--rule);will-change:transform}
+  .lbl.minor{font-size:11px;padding:2px 5px;color:var(--ink-2)}
+  .lbl.key{font-weight:700;font-size:13px;border-color:var(--ink);box-shadow:var(--shadow)}
+  .lbl.geo{background:transparent;border:0;color:var(--ink-3);font-size:13px;letter-spacing:.4em;pointer-events:none;font-weight:500}
+  .lbl.geo.river{color:var(--accent);opacity:.75;letter-spacing:.25em}
+  .hud{position:absolute;right:12px;top:12px;display:flex;flex-direction:column;gap:6px;z-index:3}
+  .hud button{background:var(--panel);border:1px solid var(--rule);border-radius:8px;padding:6px 10px;font-size:13px;cursor:pointer;box-shadow:var(--shadow);text-align:left}
+  .hud button:hover{border-color:var(--accent)}
+  .hud button[aria-pressed="true"]{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
+  .help{position:absolute;left:12px;bottom:12px;font-size:12px;color:var(--ink-2);background:var(--label-bg);border:1px solid var(--rule);border-radius:8px;padding:6px 10px;z-index:3;max-width:calc(100% - 24px)}
+  .pop{position:absolute;z-index:5;background:var(--panel);border:1px solid var(--rule);border-radius:10px;box-shadow:var(--shadow);padding:10px 12px;display:flex;flex-direction:column;gap:8px;min-width:180px}
+  .pop .nm{font-weight:700;font-size:15px}
+  .pop .row{display:flex;gap:6px}
+  .pop .row button{flex:1;border:1px solid var(--rule);background:var(--panel-2);border-radius:7px;padding:6px 8px;cursor:pointer;font-size:13px}
+  .pop .row button:hover{border-color:var(--accent)}
+  .loadmsg{position:absolute;inset:0;display:grid;place-items:center;color:var(--ink-2);font-size:14px;padding:16px;text-align:center}
+
+  @media (max-width: 760px){
+    .app{grid-template-columns:1fr;grid-template-rows:minmax(260px,46%) 1fr}
+    .stage{grid-row:1}
+    .panel{grid-row:2;border-right:0;border-top:1px solid var(--rule)}
+    .panel-scroll{padding:16px 16px 24px}
+    .hud{right:8px;top:8px}
+    .hud button{padding:5px 8px;font-size:12px}
+    .help{display:none}
+    .summary .v{font-size:19px}
+  }
+  @media (prefers-reduced-motion: reduce){ *{scroll-behavior:auto!important} }
+</style>
+</head>
+<body>
+<div class="app">
+  <aside class="panel">
+    <div class="panel-scroll">
+      <header class="brand">
+        <div class="brand-row"><span class="logo" aria-hidden="true"></span><h1>上海地鐵立體路網</h1></div>
+        <p class="sub">21 條營運路線・412 座車站。選起訖站，查從哪一站上車、在哪轉乘、到哪一站下車。</p>
+      </header>
+
+      <section aria-labelledby="pre-h">
+        <p class="eyebrow" id="pre-h">常用路線</p>
+        <div class="presets" id="presets"></div>
+      </section>
+
+      <section aria-labelledby="od-h">
+        <p class="eyebrow" id="od-h">自訂起訖</p>
+        <div class="od">
+          <div class="od-fields">
+            <label class="field" for="from"><span class="dot o" aria-hidden="true"></span><span class="tag">起點</span>
+              <input id="from" autocomplete="off" placeholder="輸入站名，如 浦東機場" role="combobox" aria-expanded="false" aria-controls="sg-from"></label>
+            <div class="suggest" id="sg-from" role="listbox" hidden></div>
+            <label class="field" for="to"><span class="dot d" aria-hidden="true"></span><span class="tag">終點</span>
+              <input id="to" autocomplete="off" placeholder="輸入站名，如 迪士尼" role="combobox" aria-expanded="false" aria-controls="sg-to"></label>
+            <div class="suggest" id="sg-to" role="listbox" hidden></div>
+          </div>
+          <button class="swap" id="swap" type="button" aria-label="起訖對調" title="起訖對調">
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M5 2v11M2 10l3 3 3-3M11 14V3M8 6l3-3 3 3"/></svg>
+          </button>
+        </div>
+        <p class="hint" style="margin-top:8px">可輸入繁體、簡體或地標（外灘、新天地、PVG）。也能直接在右側立體圖點選車站。</p>
+      </section>
+
+      <section id="result" aria-live="polite"></section>
+
+      <section aria-labelledby="lg-h">
+        <p class="eyebrow" id="lg-h">路線圖例（點選可隱藏）</p>
+        <div class="legend" id="legend"></div>
+      </section>
+
+      <p class="note">站序依 2025 年底營運路網整理；車站位置為示意近似座標，行車時間以站距與平均時速估算，並以每次轉乘加 5 分鐘步行與候車計算。票價為一般地鐵里程票價估算，磁浮與機場聯絡線另計。出發前請以上海地鐵官方資訊為準。</p>
+    </div>
+  </aside>
+
+  <main class="stage" id="stage">
+    <canvas id="gl" aria-label="上海地鐵 3D 路線分布圖"></canvas>
+    <div class="labels" id="labels"></div>
+    <div class="hud">
+      <button type="button" id="btn-stack" aria-pressed="true">立體分層</button>
+      <button type="button" id="btn-top">俯視</button>
+      <button type="button" id="btn-fit">全路網</button>
+      <button type="button" id="btn-route" hidden>回到路線</button>
+    </div>
+    <div class="help" id="help">拖曳旋轉・右鍵或雙指平移・滾輪或捏合縮放・點車站設定起訖</div>
+    <div class="loadmsg" id="loadmsg">正在載入 3D 引擎…</div>
+  </main>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/three@0.147.0/build/three.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.147.0/examples/js/controls/OrbitControls.js"></script>
+<script src="metro-data.js"></script>
+<script>
+(function(){
+"use strict";
+const M = window.METRO;
+const ST = M.stations, LINES = M.lines;
+const $ = s => document.querySelector(s);
+
+/* ---------- 路網資料整理 ---------- */
+const lineById = {}; LINES.forEach((l,i)=>{ l.idx=i; lineById[l.id]=l; });
+const services = [];
+LINES.forEach(l => l.svc.forEach(seq => {
+  const loop = seq.length>2 && seq[0]===seq[seq.length-1];
+  services.push({ line:l, seq, loop });
+}));
+const NS = services.length;
+const stLines = ST.map(()=>new Set());
+services.forEach(s => s.seq.forEach(i => stLines[i].add(s.line.id)));
+ST.forEach((s,i)=>{ s.i=i; s.lines=[...stLines[i]].sort((a,b)=>lineById[a].idx-lineById[b].idx); });
+
+function km(a,b){
+  const A=ST[a],B=ST[b],k=Math.PI/180;
+  const dx=(B.x-A.x)*Math.cos((A.y+B.y)/2*k)*111.32, dy=(B.y-A.y)*110.57;
+  return Math.hypot(dx,dy);
+}
+function edgeTime(line,d){
+  if(line.kind==="maglev") return 8;
+  if(line.kind==="rail") return d*1.1/line.speed*60+1.2;
+  return d*1.12/line.speed*60+0.6;
+}
+const adj = ST.map(()=>[]);
+services.forEach((s,si)=>{
+  for(let k=0;k<s.seq.length-1;k++){
+    const a=s.seq[k], b=s.seq[k+1], d=km(a,b)*(s.line.kind==="maglev"?1.2:1.1), t=edgeTime(s.line,km(a,b));
+    adj[a].push({to:b,svc:si,t,d}); adj[b].push({to:a,svc:si,t,d});
+  }
+});
+
+/* ---------- 名稱與搜尋 ---------- */
+const norm = s => s.toLowerCase().replace(/[\s·・．.()（）\-]/g,"").replace(/站$/,"");
+ST.forEach(s=>{ s.keys=[s.t,s.s,...s.a].map(norm); });
+const byS = {}; ST.forEach(s=>byS[s.s]=s.i);
+function badge(id,small){
+  const l=lineById[id]; const short=/^\d+$/.test(id)?id:l.name.replace("線","");
+  const fg=textOn(l.color);
+  return `<span class="badge${/^\d+$/.test(id)?"":" txt"}" style="background:${l.color};color:${fg}${small?";height:18px;min-width:20px;font-size:13px":""}" title="${l.name}">${short}</span>`;
+}
+function textOn(hex){
+  const n=parseInt(hex.slice(1),16),r=n>>16&255,g=n>>8&255,b=n&255;
+  return (0.299*r+0.587*g+0.114*b)>150?"#111":"#fff";
+}
+function search(q){
+  q=norm(q); if(!q) return [];
+  const out=[];
+  ST.forEach(s=>{
+    let sc=-1;
+    s.keys.forEach((k,j)=>{
+      let v=-1;
+      if(k===q) v=100; else if(k.startsWith(q)) v=70; else if(k.includes(q)) v=40;
+      if(v>=0 && j>=2) v-=5;
+      if(v>sc) sc=v;
+    });
+    if(sc>=0) out.push({s,sc:sc+s.lines.length});
+  });
+  return out.sort((a,b)=>b.sc-a.sc||a.s.t.length-b.s.t.length).slice(0,8).map(o=>o.s);
+}
+
+/* ---------- 路徑規劃（站點 × 營運服務 狀態的 Dijkstra） ---------- */
+function plan(from,to,opt){
+  if(from===to) return null;
+  const P=5, extra=opt.extra||0, excl=opt.exclude||new Set();
+  const W=NS+1, N=ST.length*W;
+  const dist=new Float64Array(N).fill(Infinity), prev=new Int32Array(N).fill(-1);
+  const heap=[];
+  const push=(k,d)=>{heap.push([d,k]);let i=heap.length-1;while(i>0){const p=(i-1)>>1;if(heap[p][0]<=heap[i][0])break;[heap[p],heap[i]]=[heap[i],heap[p]];i=p;}};
+  const pop=()=>{const top=heap[0],last=heap.pop();if(heap.length){heap[0]=last;let i=0;for(;;){const l=2*i+1,r=l+1;let m=i;if(l<heap.length&&heap[l][0]<heap[m][0])m=l;if(r<heap.length&&heap[r][0]<heap[m][0])m=r;if(m===i)break;[heap[m],heap[i]]=[heap[i],heap[m]];i=m;}}return top;};
+  const start=from*W+NS; dist[start]=0; push(start,0);
+  let goal=-1;
+  while(heap.length){
+    const [d,k]=pop(); if(d>dist[k]) continue;
+    const st=Math.floor(k/W), sv=k%W;
+    if(st===to){goal=k;break;}
+    for(const e of adj[st]){
+      const L=services[e.svc].line;
+      if(excl.has(L.id)) continue;
+      let c=e.t;
+      if(sv!==NS && sv!==e.svc){
+        c+=P+extra;
+        const L0=services[sv].line;
+        if(L.kind!=="metro"||L0.kind!=="metro") c+=4;
+      }
+      const nk=e.to*W+e.svc, nd=d+c;
+      if(nd<dist[nk]){dist[nk]=nd;prev[nk]=k;push(nk,nd);}
+    }
+  }
+  if(goal<0) return null;
+  const chain=[]; for(let k=goal;k>=0;k=prev[k]) chain.push(k); chain.reverse();
+  const legs=[];
+  for(let j=1;j<chain.length;j++){
+    const a=Math.floor(chain[j-1]/W), b=Math.floor(chain[j]/W), sv=chain[j]%W;
+    const e=adj[a].find(x=>x.to===b&&x.svc===sv);
+    let leg=legs[legs.length-1];
+    if(!leg||leg.svc!==sv){ leg={svc:sv,line:services[sv].line,stations:[a],time:0,km:0}; legs.push(leg); }
+    leg.stations.push(b); leg.time+=e.t; leg.km+=e.d;
+  }
+  let ride=0, metroKm=0, extraFare=[], walk=0;
+  legs.forEach((l,i)=>{
+    ride+=l.time;
+    if(l.line.kind==="metro") metroKm+=l.km; else extraFare.push(l.line);
+    if(i>0){ l.walk=5+((l.line.kind!=="metro"||legs[i-1].line.kind!=="metro")?4:0); walk+=l.walk; }
+    l.dir=direction(l);
+  });
+  return { legs, from, to, minutes:Math.round(ride+walk), transfers:legs.length-1,
+    stops:legs.reduce((n,l)=>n+l.stations.length-1,0), metroKm, fare:metroKm>0?fare(metroKm):0, extraFare,
+    sig:legs.map(l=>l.line.id+":"+l.stations[0]+">"+l.stations[l.stations.length-1]).join("|") };
+}
+function fare(k){ if(k<=6) return 3; if(k<=16) return 4; return 4+Math.ceil((k-16)/10); }
+function direction(leg){
+  const L=leg.line, a=leg.stations[0], b=leg.stations[leg.stations.length-1];
+  if(services[leg.svc].loop) return {loop:true, via:leg.stations[1]};
+  const ends=new Set();
+  services.forEach(s=>{
+    if(s.line!==L||s.loop) return;
+    const idx=leg.stations.map(x=>s.seq.indexOf(x));
+    if(idx.some(v=>v<0)) return;
+    const fwd=idx.every((v,i)=>i===0||v===idx[i-1]+1), back=idx.every((v,i)=>i===0||v===idx[i-1]-1);
+    if(fwd) ends.add(s.seq[s.seq.length-1]); else if(back) ends.add(s.seq[0]);
+  });
+  if(!ends.size) ends.add(b);
+  return {ends:[...ends]};
+}
+function alternatives(from,to){
+  const defs=[
+    {key:"最快",opt:{}},
+    {key:"最少轉乘",opt:{extra:40}},
+    {key:"只搭一般地鐵",opt:{exclude:new Set(["MG","AL"])}},
+  ];
+  const out=[], seen=new Set();
+  defs.forEach(d=>{
+    const r=plan(from,to,d.opt); if(!r) return;
+    if(seen.has(r.sig)){ const o=out.find(x=>x.sig===r.sig); o.tags.push(d.key); return; }
+    seen.add(r.sig); r.tags=[d.key]; out.push(r);
+  });
+  return out;
+}
+
+/* ---------- 側欄 UI ---------- */
+const PRESETS=[
+  {g:"機場 → 市區",items:[["浦东1号2号航站楼","人民广场","浦東機場 → 人民廣場"],["虹桥2号航站楼","南京东路","虹橋機場 → 外灘"],["浦东1号2号航站楼","陆家嘴","浦東機場 → 陸家嘴"]]},
+  {g:"市區 → 迪士尼",items:[["人民广场","迪士尼","人民廣場 → 迪士尼"],["陆家嘴","迪士尼","陸家嘴 → 迪士尼"],["虹桥火车站","迪士尼","虹橋火車站 → 迪士尼"]]},
+  {g:"其他熱門",items:[["虹桥2号航站楼","浦东1号2号航站楼","虹橋機場 → 浦東機場"],["上海火车站","豫园","上海火車站 → 豫園"],["徐家汇","野生动物园","徐家匯 → 野生動物園"]]},
+];
+const state={from:null,to:null,alts:[],pick:0,hidden:new Set()};
+function renderPresets(){
+  $("#presets").innerHTML=PRESETS.map((g,gi)=>`<div class="preset-group"><h3>${g.g}</h3><div class="chips">${
+    g.items.map((it,ii)=>`<button type="button" class="chip" data-p="${gi}-${ii}" aria-pressed="false">${it[2]}</button>`).join("")}</div></div>`).join("");
+  $("#presets").addEventListener("click",e=>{
+    const b=e.target.closest("[data-p]"); if(!b) return;
+    const [gi,ii]=b.dataset.p.split("-").map(Number), it=PRESETS[gi].items[ii];
+    setOD(byS[it[0]],byS[it[1]]);
+  });
+}
+function syncPresetPressed(){
+  document.querySelectorAll("[data-p]").forEach(b=>{
+    const [gi,ii]=b.dataset.p.split("-").map(Number), it=PRESETS[gi].items[ii];
+    b.setAttribute("aria-pressed", String(byS[it[0]]===state.from && byS[it[1]]===state.to));
+  });
+}
+function setOD(f,t){
+  if(f!==undefined) state.from=f; if(t!==undefined) state.to=t;
+  $("#from").value = state.from!=null?ST[state.from].t:"";
+  $("#to").value = state.to!=null?ST[state.to].t:"";
+  state.pick=0;
+  compute();
+}
+function compute(){
+  syncPresetPressed();
+  const res=$("#result");
+  if(state.from==null||state.to==null){
+    state.alts=[]; res.innerHTML=`<div class="empty">${state.from==null?"請選擇起點":"請選擇終點"}，或點選上方常用路線。</div>`;
+    scene3d.showRoute(null); markOD(); return;
+  }
+  if(state.from===state.to){ state.alts=[]; res.innerHTML=`<div class="empty">起點與終點是同一站，請換一個終點。</div>`; scene3d.showRoute(null); markOD(); return; }
+  state.alts=alternatives(state.from,state.to);
+  if(!state.alts.length){ res.innerHTML=`<div class="empty">找不到可行路線。</div>`; scene3d.showRoute(null); return; }
+  renderResult();
+}
+function stName(i){ return ST[i].t; }
+function renderResult(){
+  const alts=state.alts, r=alts[state.pick];
+  const optsHtml = alts.length>1 ? `<div class="opts" role="group" aria-label="路線方案">${alts.map((a,i)=>`
+    <button type="button" class="opt" data-alt="${i}" aria-pressed="${i===state.pick}">
+      <span class="k">${a.tags.join("・")}</span>
+      <span class="v">${a.minutes}<small>分</small> ${a.transfers}<small>轉</small></span>
+    </button>`).join("")}</div>` : "";
+  const fareTxt = r.fare?`¥${r.fare}`:"—";
+  const extra = r.extraFare.length?`<p class="note" style="margin-top:6px">${r.extraFare.map(l=>l.id==="MG"?"磁浮線另購票：單程 ¥50（持當日機票 ¥40）":"機場聯絡線另依官方里程票價計費").join("；")}。</p>`:"";
+  const steps=[];
+  r.legs.forEach((leg,li)=>{
+    const a=leg.stations[0];
+    const act = li===0?"上車":"轉乘";
+    const prevColor = li>0? r.legs[li-1].line.color:"transparent";
+    const dirTxt = leg.dir.loop ? `環線・經 ${stName(leg.dir.via)} 方向` : `往 ${leg.dir.ends.map(stName).join("／")} 方向`;
+    const mids = leg.stations.slice(1,-1);
+    steps.push(`<li class="stop ${li===0?"first":"xfer"}" style="--c:linear-gradient(${prevColor} 0 12px, ${leg.line.color} 12px)">
+      <div class="rail"><span class="pin" style="border-color:${li===0?"#16A34A":"var(--ink)"}"></span></div>
+      <div class="body">
+        <div class="st">${stName(a)} <span class="act">${act}</span></div>
+        ${li>0?`<div class="walk">站內轉乘，約 ${leg.walk} 分鐘步行＋候車</div>`:""}
+        <div class="ride">
+          <div class="dir">${badge(leg.line.id)} <b>${leg.line.name}</b> <span>${dirTxt}</span></div>
+          <div class="meta">搭 ${leg.stations.length-1} 站・約 ${Math.round(leg.time)} 分鐘・${leg.km.toFixed(1)} 公里</div>
+          ${mids.length?`<details><summary>顯示途經 ${mids.length} 站</summary><ol>${mids.map(i=>`<li>${stName(i)}</li>`).join("")}</ol></details>`:""}
+        </div>
+      </div></li>`);
+  });
+  steps.push(`<li class="stop last" style="--c:${r.legs[r.legs.length-1].line.color}">
+    <div class="rail"><span class="pin" style="border-color:#DC2626"></span></div>
+    <div class="body"><div class="st">${stName(r.to)} <span class="act">下車</span></div></div></li>`);
+  $("#result").innerHTML = `
+    <p class="eyebrow">搭車路線</p>
+    <div style="display:flex;flex-direction:column;gap:12px">
+      ${optsHtml}
+      <div class="summary">
+        <div><span class="k">預估時間</span><span class="v">${r.minutes}<small>分</small></span></div>
+        <div><span class="k">轉乘</span><span class="v">${r.transfers}<small>次</small></span></div>
+        <div><span class="k">站數</span><span class="v">${r.stops}<small>站</small></span></div>
+        <div><span class="k">地鐵票價</span><span class="v">${fareTxt}</span></div>
+      </div>
+      ${extra}
+      <ol class="steps">${steps.join("")}</ol>
+    </div>`;
+  $("#result").querySelectorAll("[data-alt]").forEach(b=>b.addEventListener("click",()=>{ state.pick=+b.dataset.alt; renderResult(); }));
+  scene3d.showRoute(r);
+}
+function markOD(){ scene3d.markOD(state.from,state.to); }
+
+function bindCombo(inputId,listId,which){
+  const inp=$("#"+inputId), box=$("#"+listId); let items=[], act=-1;
+  const close=()=>{box.hidden=true;inp.setAttribute("aria-expanded","false");act=-1;};
+  const draw=()=>{
+    items=search(inp.value);
+    if(!items.length){ box.innerHTML=inp.value?`<div class="hint" style="padding:8px">沒有符合的車站</div>`:""; box.hidden=!inp.value; return; }
+    box.innerHTML=items.map((s,i)=>{
+      const q=norm(inp.value), hitAlias=!s.keys[0].includes(q)&&!s.keys[1].includes(q)?s.a.find(a=>norm(a).includes(q)):"";
+      return `<button type="button" role="option" data-i="${s.i}" class="${i===act?"act":""}"><span class="nm">${s.t}${hitAlias?` <span class="al">（${hitAlias}）</span>`:""}</span><span class="badges">${s.lines.map(id=>badge(id,true)).join("")}</span></button>`;
+    }).join("");
+    box.hidden=false; inp.setAttribute("aria-expanded","true");
+  };
+  const choose=i=>{ close(); if(which==="from") setOD(i,undefined); else setOD(undefined,i); inp.blur(); };
+  inp.addEventListener("input",()=>{act=-1;draw();});
+  inp.addEventListener("focus",()=>{ inp.select(); });
+  inp.addEventListener("keydown",e=>{
+    if(e.key==="ArrowDown"){act=Math.min(items.length-1,act+1);draw();e.preventDefault();}
+    else if(e.key==="ArrowUp"){act=Math.max(0,act-1);draw();e.preventDefault();}
+    else if(e.key==="Enter"){ if(items.length) choose(items[Math.max(0,act)].i); e.preventDefault(); }
+    else if(e.key==="Escape"){ close(); }
+  });
+  box.addEventListener("mousedown",e=>e.preventDefault());
+  box.addEventListener("click",e=>{ const b=e.target.closest("[data-i]"); if(b) choose(+b.dataset.i); });
+  inp.addEventListener("blur",()=>{ setTimeout(()=>{ close(); const cur=which==="from"?state.from:state.to; inp.value=cur!=null?ST[cur].t:""; },120); });
+}
+function renderLegend(){
+  $("#legend").innerHTML=LINES.map(l=>`<button type="button" data-l="${l.id}" aria-pressed="true" title="${l.name}">${badge(l.id)}</button>`).join("");
+  $("#legend").addEventListener("click",e=>{
+    const b=e.target.closest("[data-l]"); if(!b) return;
+    const id=b.dataset.l; if(state.hidden.has(id)) state.hidden.delete(id); else state.hidden.add(id);
+    b.setAttribute("aria-pressed", String(!state.hidden.has(id)));
+    scene3d.setHidden(state.hidden);
+  });
+}
+
+/* ---------- 3D 場景 ---------- */
+const scene3d = { showRoute(){}, markOD(){}, setHidden(){} };
+function css(name){ return getComputedStyle(document.documentElement).getPropertyValue(name).trim(); }
+
+function initScene(){
+  if(!window.THREE||!THREE.OrbitControls){ $("#loadmsg").textContent="3D 引擎載入失敗，請檢查網路後重新整理。路線查詢仍可使用。"; return; }
+  $("#loadmsg").remove();
+  const canvas=$("#gl"), stage=$("#stage");
+  const renderer=new THREE.WebGLRenderer({canvas,antialias:true});
+  renderer.setPixelRatio(Math.min(2,window.devicePixelRatio||1));
+  const scene=new THREE.Scene();
+  const camera=new THREE.PerspectiveCamera(42,1,0.1,2000);
+  const controls=new THREE.OrbitControls(camera,canvas);
+  controls.enableDamping=true; controls.dampingFactor=0.08; controls.maxPolarAngle=Math.PI*0.47;
+  controls.minDistance=4; controls.maxDistance=260; controls.screenSpacePanning=false;
+  controls.touches={ONE:THREE.TOUCH.ROTATE,TWO:THREE.TOUCH.DOLLY_PAN};
+
+  const LON0=121.47, LAT0=31.215;
+  const X=lon=>(lon-LON0)*95.3, Z=lat=>-(lat-LAT0)*110.6;
+  let stacked=true;
+  const GAP=0.55;
+  const layerOrder=LINES.map(l=>l.id);
+  const hOf=id=>stacked?0.7+layerOrder.indexOf(id)*GAP:0.35+layerOrder.indexOf(id)*0.004;
+  const pos=(i,id)=>new THREE.Vector3(X(ST[i].x),hOf(id),Z(ST[i].y));
+  const topH=i=>Math.max(...ST[i].lines.map(hOf));
+
+  const hemi=new THREE.HemisphereLight(0xffffff,0x445566,0.9); scene.add(hemi);
+  const sun=new THREE.DirectionalLight(0xffffff,0.7); sun.position.set(-30,80,40); scene.add(sun);
+
+  // 地面、格線、黃浦江
+  const ground=new THREE.Mesh(new THREE.PlaneGeometry(400,400),new THREE.MeshBasicMaterial({color:0xffffff}));
+  ground.rotation.x=-Math.PI/2; ground.position.y=-0.02; scene.add(ground);
+  const grid=new THREE.GridHelper(200,40,0x888888,0x888888); grid.material.transparent=true; grid.material.opacity=.3; scene.add(grid);
+  const RIVER=[[121.30,30.980],[121.38,30.995],[121.43,30.993],[121.455,31.002],[121.462,31.040],[121.457,31.080],[121.460,31.105],[121.468,31.128],[121.472,31.150],[121.471,31.170],[121.476,31.186],[121.488,31.195],[121.500,31.205],[121.500,31.218],[121.492,31.232],[121.495,31.242],[121.510,31.248],[121.530,31.255],[121.550,31.268],[121.562,31.290],[121.560,31.315],[121.542,31.343],[121.522,31.368],[121.505,31.392],[121.49,31.41]];
+  const riverMat=new THREE.MeshBasicMaterial({color:0x88aacc,side:THREE.DoubleSide});
+  (function(){
+    const pts=RIVER.map(p=>new THREE.Vector2(X(p[0]),Z(p[1]))), w=0.32, verts=[], idx=[];
+    pts.forEach((p,i)=>{
+      const a=pts[Math.max(0,i-1)], b=pts[Math.min(pts.length-1,i+1)];
+      const t=new THREE.Vector2(b.x-a.x,b.y-a.y).normalize(), n=new THREE.Vector2(-t.y,t.x);
+      verts.push(p.x+n.x*w,0.01,p.y+n.y*w, p.x-n.x*w,0.01,p.y-n.y*w);
+      if(i) idx.push(2*i-2,2*i-1,2*i, 2*i-1,2*i+1,2*i);
+    });
+    const g=new THREE.BufferGeometry(); g.setAttribute("position",new THREE.Float32BufferAttribute(verts,3)); g.setIndex(idx);
+    scene.add(new THREE.Mesh(g,riverMat));
+  })();
+
+  // 路線管線
+  const netGroup=new THREE.Group(); scene.add(netGroup);
+  const routeGroup=new THREE.Group(); scene.add(routeGroup);
+  let lineMeshes=[], nodeMesh=null, pillarMesh=null, dotMesh=null, hitMesh=null, hitIndex=[];
+  const lineMats={};
+  LINES.forEach(l=>{ lineMats[l.id]=new THREE.MeshStandardMaterial({color:l.color,roughness:.55,metalness:.05,emissive:l.color,emissiveIntensity:.18,transparent:true,opacity:1}); });
+  const nodeMat=new THREE.MeshStandardMaterial({color:0xffffff,roughness:.4,transparent:true,opacity:1});
+  const pillarMat=new THREE.MeshStandardMaterial({color:0x445566,roughness:.6,transparent:true,opacity:.85});
+  const dotMat=new THREE.MeshBasicMaterial({color:0x445566,transparent:true,opacity:.35});
+
+  function curveFor(points,closed){
+    if(points.length===2) return new THREE.LineCurve3(points[0],points[1]);
+    return new THREE.CatmullRomCurve3(points,closed,"centripetal",0.5);
+  }
+  function arcPoints(a,b,id){
+    // 磁浮與機場聯絡線用拱形高架，與一般路線區隔
+    const pa=pos(a,id), pb=pos(b,id), mid=pa.clone().lerp(pb,.5); mid.y+=stacked?2.2:1.2;
+    return [pa,mid,pb];
+  }
+  function buildNetwork(){
+    netGroup.clear(); lineMeshes=[];
+    services.forEach(s=>{
+      const id=s.line.id;
+      let seq=s.seq.slice(); if(s.loop) seq.pop();
+      const pts = id==="MG" ? arcPoints(seq[0],seq[1],id) : seq.map(i=>pos(i,id));
+      const curve=curveFor(pts,s.loop);
+      const geo=new THREE.TubeGeometry(curve,Math.max(24,pts.length*12),0.14,7,s.loop);
+      const mesh=new THREE.Mesh(geo,lineMats[id]); mesh.userData.line=id; netGroup.add(mesh); lineMeshes.push(mesh);
+    });
+    // 車站節點（每條路線一顆）
+    const pairs=[]; ST.forEach(s=>s.lines.forEach(id=>pairs.push([s.i,id])));
+    const sph=new THREE.SphereGeometry(1,14,10);
+    nodeMesh=new THREE.InstancedMesh(sph,nodeMat,pairs.length);
+    const m=new THREE.Matrix4();
+    pairs.forEach(([i,id],k)=>{ const p=pos(i,id), r=ST[i].lines.length>1?0.26:0.19; m.makeScale(r,r,r).setPosition(p); nodeMesh.setMatrixAt(k,m); });
+    nodeMesh.userData.pairs=pairs; netGroup.add(nodeMesh);
+    // 轉乘站立柱
+    const xs=ST.filter(s=>s.lines.length>1);
+    pillarMesh=new THREE.InstancedMesh(new THREE.CylinderGeometry(1,1,1,8),pillarMat,xs.length);
+    xs.forEach((s,k)=>{ const h=topH(s.i); m.makeScale(0.07,h,0.07).setPosition(X(s.x),h/2,Z(s.y)); pillarMesh.setMatrixAt(k,m); });
+    netGroup.add(pillarMesh);
+    // 地面投影點
+    dotMesh=new THREE.InstancedMesh(new THREE.CircleGeometry(1,14),dotMat,ST.length);
+    const q=new THREE.Quaternion().setFromEuler(new THREE.Euler(-Math.PI/2,0,0));
+    ST.forEach((s,k)=>{ const r=s.lines.length>1?0.32:0.18; m.compose(new THREE.Vector3(X(s.x),0.02,Z(s.y)),q,new THREE.Vector3(r,r,r)); dotMesh.setMatrixAt(k,m); });
+    netGroup.add(dotMesh);
+    // 點選用的隱形感應球
+    hitIndex=ST.map(s=>s.i);
+    hitMesh=new THREE.InstancedMesh(new THREE.SphereGeometry(1,8,6),new THREE.MeshBasicMaterial({visible:false}),ST.length);
+    ST.forEach((s,k)=>{ const h=topH(s.i); m.makeScale(0.75,h/2+0.6,0.75).setPosition(X(s.x),h/2,Z(s.y)); hitMesh.setMatrixAt(k,m); });
+    netGroup.add(hitMesh);
+    applyHidden();
+  }
+
+  // OD 標記
+  const odGroup=new THREE.Group(); scene.add(odGroup);
+  function odMarker(i,color){
+    const g=new THREE.Group(), h=topH(i);
+    const ring=new THREE.Mesh(new THREE.TorusGeometry(0.7,0.12,8,32),new THREE.MeshBasicMaterial({color}));
+    ring.rotation.x=Math.PI/2; ring.position.set(X(ST[i].x),h+0.02,Z(ST[i].y)); g.add(ring);
+    const beam=new THREE.Mesh(new THREE.CylinderGeometry(0.05,0.05,3,6),new THREE.MeshBasicMaterial({color,transparent:true,opacity:.7}));
+    beam.position.set(X(ST[i].x),h+1.5,Z(ST[i].y)); g.add(beam);
+    const cap=new THREE.Mesh(new THREE.SphereGeometry(0.28,12,10),new THREE.MeshBasicMaterial({color}));
+    cap.position.set(X(ST[i].x),h+3.05,Z(ST[i].y)); g.add(cap);
+    return g;
+  }
+  function markOD(f,t){
+    odGroup.clear();
+    if(f!=null) odGroup.add(odMarker(f,0x16A34A));
+    if(t!=null) odGroup.add(odMarker(t,0xDC2626));
+  }
+
+  // 路線凸顯
+  let route=null, train=null, trainCurve=null, trainLen=1, routeKey=new Set(), routeMid=new Set();
+  function setDim(on){
+    Object.values(lineMats).forEach(mt=>{ mt.opacity=on?0.13:1; mt.depthWrite=!on; });
+    nodeMat.opacity=on?0.18:1; pillarMat.opacity=on?0.2:.85; dotMat.opacity=on?0.15:.35;
+  }
+  function showRoute(r){
+    route=r; routeGroup.clear(); train=null; routeKey=new Set(); routeMid=new Set();
+    $("#btn-route").hidden=!r;
+    if(!r){ setDim(false); labelsDirty=true; return; }
+    setDim(true);
+    const all=[];
+    r.legs.forEach((leg,li)=>{
+      const id=leg.line.id;
+      let pts;
+      if(id==="MG") pts=arcPoints(leg.stations[0],leg.stations[1],id);
+      else {
+        pts=leg.stations.map(i=>pos(i,id));
+        // 環線跨越頭尾時也能平滑
+      }
+      const curve=curveFor(pts,false);
+      const mat=new THREE.MeshStandardMaterial({color:leg.line.color,emissive:leg.line.color,emissiveIntensity:.45,roughness:.35});
+      routeGroup.add(new THREE.Mesh(new THREE.TubeGeometry(curve,Math.max(20,pts.length*14),0.26,10,false),mat));
+      const sph=new THREE.SphereGeometry(0.34,14,10);
+      leg.stations.forEach((i,k)=>{
+        const end=k===0||k===leg.stations.length-1;
+        const n=new THREE.Mesh(end?new THREE.SphereGeometry(0.5,16,12):sph,new THREE.MeshStandardMaterial({color:0xffffff,emissive:end?leg.line.color:0x000000,emissiveIntensity:.25}));
+        n.position.copy(pos(i,id)); routeGroup.add(n);
+        (end?routeKey:routeMid).add(i);
+      });
+      const sampled=curve.getSpacedPoints(Math.max(8,Math.round(curve.getLength()*3)));
+      if(li>0){
+        // 轉乘：垂直移動到新路線的高度
+        const prev=all[all.length-1], nxt=sampled[0];
+        for(let s=1;s<=10;s++) all.push(prev.clone().lerp(nxt,s/10));
+        const xfer=new THREE.Mesh(new THREE.CylinderGeometry(0.12,0.12,Math.abs(prev.y-nxt.y)+0.01,8),new THREE.MeshBasicMaterial({color:css("--pillar")?new THREE.Color(css("--pillar")):0x445566}));
+        xfer.position.set(nxt.x,(prev.y+nxt.y)/2,nxt.z); routeGroup.add(xfer);
+      }
+      all.push(...sampled);
+    });
+    routeMid.forEach(i=>{ if(routeKey.has(i)) routeMid.delete(i); });
+    trainCurve=new THREE.CatmullRomCurve3(all,false,"catmullrom",0);
+    trainLen=trainCurve.getLength();
+    const tg=new THREE.Group();
+    tg.add(new THREE.Mesh(new THREE.SphereGeometry(0.42,16,12),new THREE.MeshBasicMaterial({color:0xffffff})));
+    const halo=new THREE.Mesh(new THREE.SphereGeometry(0.8,16,12),new THREE.MeshBasicMaterial({color:0xffffff,transparent:true,opacity:.25,depthWrite:false}));
+    tg.add(halo); train=tg; routeGroup.add(tg);
+    train.position.copy(all[0]);
+    labelsDirty=true;
+    fitRoute();
+  }
+
+  // 相機
+  let anim=null;
+  function flyTo(target,dist,polar,azim,ms=900){
+    const reduce=matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const sph=new THREE.Spherical().setFromVector3(camera.position.clone().sub(controls.target));
+    const from={t:controls.target.clone(),r:sph.radius,p:sph.phi,a:sph.theta};
+    const to={t:target.clone(),r:dist,p:polar??sph.phi,a:azim??sph.theta};
+    let da=to.a-from.a; while(da>Math.PI) da-=2*Math.PI; while(da<-Math.PI) da+=2*Math.PI; to.a=from.a+da;
+    anim={from,to,t0:performance.now(),ms:reduce?1:ms};
+  }
+  function stepAnim(now){
+    if(!anim) return;
+    let k=Math.min(1,(now-anim.t0)/anim.ms); const e=k<.5?4*k*k*k:1-Math.pow(-2*k+2,3)/2;
+    const f=anim.from,t=anim.to;
+    controls.target.lerpVectors(f.t,t.t,e);
+    const s=new THREE.Spherical(f.r+(t.r-f.r)*e,f.p+(t.p-f.p)*e,f.a+(t.a-f.a)*e);
+    camera.position.copy(controls.target).add(new THREE.Vector3().setFromSpherical(s));
+    labelsDirty=true;
+    if(k>=1) anim=null;
+  }
+  function fitPoints(pts,polar,azim){
+    const box=new THREE.Box3().setFromPoints(pts), sph=box.getBoundingSphere(new THREE.Sphere());
+    const vfov=camera.fov*Math.PI/180, hfov=2*Math.atan(Math.tan(vfov/2)*camera.aspect);
+    const d=Math.max(sph.radius,3)/Math.sin(Math.min(vfov,hfov)/2)*0.92;
+    flyTo(sph.center,Math.min(240,Math.max(8,d)),polar,azim);
+  }
+  function fitRoute(){
+    if(!route) return;
+    const pts=[]; route.legs.forEach(l=>l.stations.forEach(i=>pts.push(pos(i,l.line.id))));
+    fitPoints(pts,0.85);
+  }
+  function fitAll(){ fitPoints(ST.map(s=>new THREE.Vector3(X(s.x),0,Z(s.y))),0.9,-0.35); }
+
+  // 標籤
+  const labelsEl=$("#labels"); const lbl=[];
+  ST.forEach(s=>{
+    const d=document.createElement("div"); d.className="lbl"; d.textContent=s.t; d.hidden=true; d.dataset.i=s.i;
+    labelsEl.appendChild(d); lbl.push({el:d,w:0,h:0,shown:false,cls:""});
+  });
+  const GEO=[{t:"浦西",lon:121.40,lat:31.235,cls:"geo"},{t:"浦東",lon:121.60,lat:31.215,cls:"geo"},{t:"黃浦江",lon:121.478,lat:31.16,cls:"geo river"}];
+  GEO.forEach(g=>{ const d=document.createElement("div"); d.className="lbl "+g.cls; d.textContent=g.t; labelsEl.appendChild(d); g.el=d; });
+  const HUBS=new Set(["浦东1号2号航站楼","虹桥2号航站楼","虹桥火车站","迪士尼","人民广场","陆家嘴","南京东路","上海火车站","徐家汇","世纪大道","龙阳路","静安寺","豫园","上海南站","滴水湖"].map(n=>byS[n]));
+  let labelsDirty=true;
+  labelsEl.addEventListener("click",e=>{ const d=e.target.closest(".lbl[data-i]"); if(d){ const r=d.getBoundingClientRect(), sr=stage.getBoundingClientRect(); openPop(+d.dataset.i, r.left-sr.left+r.width/2, r.top-sr.top); } });
+  const v=new THREE.Vector3();
+  function updateLabels(){
+    const W=stage.clientWidth,H=stage.clientHeight;
+    const dist=camera.position.distanceTo(controls.target);
+    const cand=[];
+    ST.forEach(s=>{
+      let pr, cls;
+      if(route){
+        if(routeKey.has(s.i)){pr=1000;cls="key";}
+        else if(routeMid.has(s.i)){pr=500;cls="minor";}
+        else if(HUBS.has(s.i)){pr=60;cls="minor";}
+        else return;
+      } else {
+        if(state.hidden.size && s.lines.every(id=>state.hidden.has(id))) return;
+        pr = (HUBS.has(s.i)?200:0) + s.lines.length*40 + (s.i===state.from||s.i===state.to?1000:0);
+        cls = (s.i===state.from||s.i===state.to)?"key":(pr>=120?"":"minor");
+        if(s.lines.length===1 && dist>70 && !HUBS.has(s.i)) return;
+      }
+      v.set(X(s.x),topH(s.i),Z(s.y)).project(camera);
+      if(v.z>1||v.x<-1.1||v.x>1.1||v.y<-1.1||v.y>1.1) return;
+      cand.push({i:s.i,pr,cls,x:(v.x+1)/2*W,y:(1-v.y)/2*H});
+    });
+    cand.sort((a,b)=>b.pr-a.pr);
+    const placed=[], show=new Set();
+    for(const c of cand){
+      const L=lbl[c.i];
+      if(L.cls!==c.cls){ L.el.className="lbl"+(c.cls?" "+c.cls:""); L.cls=c.cls; L.w=0; }
+      if(!L.w){ L.el.hidden=false; L.w=L.el.offsetWidth; L.h=L.el.offsetHeight; }
+      const x=c.x+8, y=c.y-L.h-6;
+      const r={x0:x-2,y0:y-2,x1:x+L.w+2,y1:y+L.h+2};
+      if(c.pr<1000 && placed.some(p=>r.x0<p.x1&&r.x1>p.x0&&r.y0<p.y1&&r.y1>p.y0)) continue;
+      placed.push(r); show.add(c.i);
+      L.el.style.transform=`translate(${x.toFixed(1)}px,${y.toFixed(1)}px)`;
+      if(placed.length>90) break;
+    }
+    lbl.forEach((L,i)=>{ const s=show.has(i); if(L.shown!==s||(!s&&!L.el.hidden)){ L.el.hidden=!s; L.shown=s; } });
+    GEO.forEach(g=>{
+      v.set(X(g.lon),0.05,Z(g.lat)).project(camera);
+      const ok=v.z<1&&Math.abs(v.x)<1&&Math.abs(v.y)<1&&dist<150;
+      g.el.hidden=!ok; if(ok) g.el.style.transform=`translate(${((v.x+1)/2*W-20).toFixed(1)}px,${((1-v.y)/2*H).toFixed(1)}px)`;
+    });
+  }
+
+  // 點選車站
+  const ray=new THREE.Raycaster(), ndc=new THREE.Vector2();
+  let down=null, pop=null;
+  canvas.addEventListener("pointerdown",e=>{ down={x:e.clientX,y:e.clientY}; });
+  canvas.addEventListener("pointerup",e=>{
+    if(!down) return; const moved=Math.hypot(e.clientX-down.x,e.clientY-down.y); down=null;
+    if(moved>6) return;
+    const r=canvas.getBoundingClientRect();
+    ndc.set((e.clientX-r.left)/r.width*2-1,-((e.clientY-r.top)/r.height)*2+1);
+    ray.setFromCamera(ndc,camera);
+    const hit=ray.intersectObject(hitMesh,false).filter(h=>!ST[hitIndex[h.instanceId]].lines.every(id=>state.hidden.has(id)))[0];
+    if(hit) openPop(hitIndex[hit.instanceId],e.clientX-r.left,e.clientY-r.top); else closePop();
+  });
+  function openPop(i,x,y){
+    closePop();
+    const s=ST[i]; pop=document.createElement("div"); pop.className="pop"; pop.setAttribute("role","dialog"); pop.setAttribute("aria-label",s.t);
+    pop.innerHTML=`<div class="nm">${s.t}</div><div class="badges">${s.lines.map(id=>badge(id)).join("")}</div>
+      <div class="row"><button type="button" data-w="from">設為起點</button><button type="button" data-w="to">設為終點</button></div>`;
+    stage.appendChild(pop);
+    const W=stage.clientWidth,H=stage.clientHeight, pw=pop.offsetWidth, ph=pop.offsetHeight;
+    pop.style.left=Math.min(W-pw-8,Math.max(8,x-pw/2))+"px"; pop.style.top=(y-ph-14<8?y+14:y-ph-14)+"px";
+    pop.addEventListener("click",e=>{ const b=e.target.closest("[data-w]"); if(!b) return;
+      if(b.dataset.w==="from") setOD(i,undefined); else setOD(undefined,i); closePop(); });
+    pop.querySelector("button").focus({preventScroll:true});
+  }
+  function closePop(){ if(pop){pop.remove();pop=null;} }
+  document.addEventListener("keydown",e=>{ if(e.key==="Escape") closePop(); });
+  controls.addEventListener("start",closePop);
+
+  // 隱藏路線
+  function applyHidden(){
+    lineMeshes.forEach(m=>m.visible=!state.hidden.has(m.userData.line));
+    labelsDirty=true;
+  }
+
+  // 主題
+  function applyTheme(){
+    const bg=new THREE.Color(css("--scene"));
+    scene.background=bg; scene.fog=new THREE.Fog(bg,160,420);
+    ground.material.color.set(css("--ground"));
+    grid.material.color.set(css("--grid"));
+    riverMat.color.set(css("--river"));
+    nodeMat.color.set(css("--node"));
+    pillarMat.color.set(css("--pillar")); dotMat.color.set(css("--pillar"));
+    const dark=bg.getHSL({}).l<0.3;
+    Object.values(lineMats).forEach(m=>m.emissiveIntensity=dark?.35:.15);
+    hemi.intensity=dark?.75:.95;
+  }
+  matchMedia("(prefers-color-scheme: dark)").addEventListener("change",applyTheme);
+  new MutationObserver(applyTheme).observe(document.documentElement,{attributes:true,attributeFilter:["data-theme"]});
+
+  // HUD
+  $("#btn-stack").addEventListener("click",e=>{
+    stacked=!stacked; e.currentTarget.setAttribute("aria-pressed",String(stacked));
+    e.currentTarget.textContent=stacked?"立體分層":"平面路網";
+    buildNetwork(); markOD(state.from,state.to); if(route) showRoute(route);
+  });
+  $("#btn-top").addEventListener("click",()=>{ const d=camera.position.distanceTo(controls.target); flyTo(controls.target,d,0.001,0); });
+  $("#btn-fit").addEventListener("click",fitAll);
+  $("#btn-route").addEventListener("click",fitRoute);
+
+  function resize(){
+    const w=stage.clientWidth,h=stage.clientHeight; if(!w||!h) return;
+    renderer.setSize(w,h,false); camera.aspect=w/h; camera.updateProjectionMatrix(); labelsDirty=true;
+  }
+  new ResizeObserver(resize).observe(stage);
+  controls.addEventListener("change",()=>labelsDirty=true);
+
+  const reduce=matchMedia("(prefers-reduced-motion: reduce)");
+  let last=performance.now(), trainT=0;
+  function loop(now){
+    const dt=Math.min(0.05,(now-last)/1000); last=now;
+    stepAnim(now); controls.update();
+    if(train&&trainCurve&&!reduce.matches){
+      trainT=(trainT+dt*Math.max(4,trainLen/9)/trainLen)%1;
+      train.position.copy(trainCurve.getPointAt(trainT));
+      const s=1+0.25*Math.sin(now/180); train.children[1].scale.set(s,s,s);
+    }
+    renderer.render(scene,camera);
+    if(labelsDirty){ labelsDirty=false; updateLabels(); }
+    requestAnimationFrame(loop);
+  }
+
+  camera.position.set(0,60,60); controls.target.set(0,0,0);
+  applyTheme(); buildNetwork(); resize();
+  scene3d.showRoute=showRoute; scene3d.markOD=markOD; scene3d.setHidden=()=>{ applyHidden(); };
+  requestAnimationFrame(loop);
+  return true;
+}
+
+/* ---------- 啟動 ---------- */
+renderPresets(); renderLegend();
+bindCombo("from","sg-from","from"); bindCombo("to","sg-to","to");
+$("#swap").addEventListener("click",()=>setOD(state.to,state.from));
+try{ initScene(); }catch(err){ console.error(err); const m=$("#loadmsg"); if(m) m.textContent="此裝置無法顯示 3D 畫面，路線查詢仍可使用。"; }
+const wrapShow=scene3d.showRoute, wrapMark=scene3d.markOD;
+scene3d.showRoute=r=>{ wrapShow(r); wrapMark(state.from,state.to); };
+setOD(byS["浦东1号2号航站楼"],byS["人民广场"]);
+})();
+</script>
+</body>
+</html>
