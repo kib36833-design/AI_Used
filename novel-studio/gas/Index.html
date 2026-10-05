@@ -1,0 +1,1037 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>小說影視化工坊｜董元創作室</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@500;700;900&family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#0c0a08; --panel:#16130f; --panel2:#201b15; --line:#3a3125; --gold:#c9a24a; --gold2:#e8cd83;
+  --text:#ede4d0; --mute:#9b8f78; --red:#c55a45; --ink:#0c0a08;
+  --serif:"Noto Serif TC","Songti TC","PMingLiU",serif;
+  --sans:"Noto Sans TC","PingFang TC","Microsoft JhengHei",system-ui,sans-serif;
+  box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px); padding-bottom:env(safe-area-inset-bottom,0px);
+  color-scheme:dark;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--bg:#0c0a08;--panel:#16130f;--panel2:#201b15;--line:#3a3125;--gold:#c9a24a;--gold2:#e8cd83;--text:#ede4d0;--mute:#9b8f78;--red:#c55a45;--ink:#0c0a08}}
+:root[data-theme="dark"]{--bg:#0c0a08;--panel:#16130f;--panel2:#201b15;--line:#3a3125;--gold:#c9a24a;--gold2:#e8cd83;--text:#ede4d0;--mute:#9b8f78;--red:#c55a45;--ink:#0c0a08}
+:root[data-theme="light"]{--bg:#f2ecdf;--panel:#fffaf0;--panel2:#ece2cc;--line:#d6c6a2;--gold:#8a6a1c;--gold2:#6b5114;--text:#221b10;--mute:#6f634c;--red:#a53a2a;--ink:#fffaf0;color-scheme:light}
+html{scroll-padding-top:calc(env(safe-area-inset-top,0px) + 80px)}
+*,*::before,*::after{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--text);font-family:var(--sans);font-size:15px;line-height:1.7}
+button,input,select,textarea{font:inherit;color:inherit}
+:focus-visible{outline:2px solid var(--gold2);outline-offset:2px}
+
+/* 片頭 */
+.top{position:sticky;top:env(safe-area-inset-top,0px);z-index:20;background:var(--bg);border-bottom:1px solid var(--line);display:flex;align-items:center;gap:16px;padding:10px 20px}
+.brand{display:flex;flex-direction:column;line-height:1.2;min-width:0;flex:1}
+.brand small{color:var(--mute);font-size:12px;letter-spacing:.12em}
+.brand b{font-family:var(--serif);font-weight:900;font-size:22px;color:var(--gold2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.brand b span{color:var(--text);font-weight:500;font-size:15px;margin-left:10px}
+.aisel{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--mute)}
+.aisel select{background:var(--panel);border:1px solid var(--line);border-radius:6px;padding:4px 8px}
+.aisel[hidden]{display:none}
+.sync{font-size:12.5px;color:var(--mute);white-space:nowrap}.sync.ok{color:var(--gold)}.sync.bad{color:var(--red)}
+.pcard h3{color:var(--gold2);font-size:17px}
+.engnote{background:var(--panel2);border:1px solid var(--gold);border-radius:8px;padding:10px 14px;margin:0 0 6px;font-size:14px}
+.engnote b{color:var(--gold2)}
+.diff{background:var(--panel2);border:1px solid var(--gold);border-radius:8px;padding:8px 12px;font-size:13.5px;display:flex;flex-wrap:wrap;gap:6px 12px;align-items:center}
+.diff:empty{display:none}
+.diff b{color:var(--gold2)}
+.diff ul{margin:0;padding-left:18px;flex:1 1 100%}
+.fixbox{border-top:1px dashed var(--line);padding-top:12px;margin-top:4px}
+.fixrow{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-bottom:8px;font-size:13px;color:var(--mute)}
+.ckrow{display:flex;flex-wrap:wrap;gap:6px 14px;margin-bottom:8px}
+label.ck{flex-direction:row;align-items:center;gap:5px;font-size:13px;color:var(--text);cursor:pointer}
+label.ck input{width:auto;margin:0}
+.fixnote{font-size:13px;color:var(--mute);margin:8px 0 0;border-left:3px solid var(--gold);padding-left:8px}
+.badge{font-size:12px;border-radius:999px;padding:1px 9px;border:1px solid var(--line);color:var(--mute)}
+.badge.ok{border-color:#5f9a63;color:#7fbf83}.badge.fail{border-color:var(--red);color:var(--red)}
+.frame.ok{border-color:#5f9a63}.frame.fail{border-color:#c55a45}
+.frame i{font-style:normal;color:#e8cd83}
+.prog{height:8px;background:var(--panel2);border-radius:99px;overflow:hidden;margin:6px 0}
+.prog div{height:100%;background:var(--gold)}
+.dots{display:flex;flex-wrap:wrap;gap:6px;margin:10px 0 16px}
+.dot{width:36px;height:36px;border-radius:8px;border:1px solid var(--line);background:var(--panel);cursor:pointer;color:var(--mute);font-size:13px}
+.dot.on{border-color:var(--gold);color:var(--gold2);border-width:2px}
+.dot.ok{background:#2c4a2e;color:#cfe8d0}.dot.fail{background:#5a2620;color:#f3d2cb}
+.shootcard{border:1px solid var(--gold);border-radius:12px;background:var(--panel);padding:16px}
+.shootcard>header{display:flex;flex-wrap:wrap;gap:8px 12px;align-items:baseline;margin-bottom:8px}
+.shootcard .no{font-family:var(--serif);font-weight:900;font-size:22px;color:var(--gold2)}
+.shootdesc{font-family:var(--serif);font-size:15.5px;margin:0 0 14px}
+.sblock{margin-bottom:14px}
+.sblock .lbl{display:flex;justify-content:space-between;align-items:center;gap:8px;font-size:13.5px;color:var(--text);margin-bottom:4px}
+.sblock pre{margin:0;white-space:pre-wrap;word-break:break-word;background:var(--bg);border:1px solid var(--line);border-radius:6px;padding:10px 12px;font-family:var(--sans);font-size:13px;max-height:180px;overflow:auto}
+.btn.big{padding:10px 18px;font-size:15px}
+.btn.okb{border-color:#5f9a63;color:#7fbf83}.btn.okb.on{background:#2c4a2e;color:#e4f3e5}
+.btn.warn.on{background:var(--red);color:#fff}
+.btn[disabled]{opacity:.4;cursor:default}
+.cc{font-size:11.5px;color:var(--mute);margin-left:6px}
+.themebtn{background:none;border:1px solid var(--line);border-radius:6px;padding:4px 10px;cursor:pointer;color:var(--mute)}
+
+.shell{display:grid;grid-template-columns:210px minmax(0,1fr);min-height:calc(100vh - 64px)}
+.rail{border-right:1px solid var(--line);padding:18px 0;position:sticky;top:64px;align-self:start;height:calc(100vh - 64px)}
+.rail button{display:flex;gap:12px;align-items:baseline;width:100%;background:none;border:0;padding:11px 22px;text-align:left;cursor:pointer;color:var(--mute);border-left:3px solid transparent}
+.rail button i{font-style:normal;font-family:var(--serif);font-size:13px;color:var(--line);width:22px}
+.rail button.on{color:var(--text);border-left-color:var(--gold);background:var(--panel)}
+.rail button.on i{color:var(--gold)}
+.rail button:hover{color:var(--text)}
+.rail .railnote{margin:22px 22px 0;font-size:12px;color:var(--mute);line-height:1.6;border-top:1px solid var(--line);padding-top:14px}
+
+main{padding:26px 32px 80px;max-width:1080px;width:100%;min-width:0}
+.aisel>span{white-space:nowrap}
+h2{font-family:var(--serif);font-weight:700;font-size:24px;margin:0 0 6px;color:var(--gold2)}
+h3{font-family:var(--serif);font-size:18px;margin:0}
+.sec{margin-bottom:34px}
+.hint{color:var(--mute);font-size:13.5px;margin:4px 0 14px;max-width:70ch}
+label{display:flex;flex-direction:column;gap:4px;font-size:13px;color:var(--mute)}
+input,select,textarea{background:var(--panel);border:1px solid var(--line);border-radius:6px;padding:8px 10px;color:var(--text);font-size:14.5px;width:100%}
+textarea{resize:vertical;min-height:70px;line-height:1.65}
+textarea.src{min-height:320px;font-family:var(--serif);font-size:15.5px;line-height:1.9}
+.grid2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.grid3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+.grid4{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}
+.row{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin:10px 0}
+.toolbar{display:flex;flex-wrap:wrap;gap:10px;align-items:end;background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:12px 14px;margin:12px 0 20px}
+.toolbar label{width:auto}
+.toolbar input[type=number]{width:80px}
+.btn{display:inline-flex;align-items:center;gap:6px;background:var(--panel2);border:1px solid var(--line);border-radius:6px;padding:8px 14px;cursor:pointer;color:var(--text);font-size:14px;white-space:nowrap}
+.btn:hover{border-color:var(--gold)}
+.btn.gold{background:var(--gold);border-color:var(--gold);color:var(--ink);font-weight:700}
+.btn.gold:hover{background:var(--gold2)}
+.btn.sm{padding:4px 10px;font-size:13px}
+.btn.del{color:var(--red)}
+.btn.warn{border-color:var(--red);color:var(--red)}
+.meta{color:var(--mute);font-size:13px;margin:6px 0 14px}
+.empty{border:1px dashed var(--line);border-radius:8px;padding:28px;text-align:center;color:var(--mute)}
+.empty .btn{margin-top:12px}
+
+/* 集數 */
+.eps{display:flex;gap:8px;overflow-x:auto;padding-bottom:6px;margin:6px 0 14px}
+.chip{flex:none;background:var(--panel);border:1px solid var(--line);border-radius:999px;padding:6px 14px;cursor:pointer;color:var(--mute);font-size:13.5px}
+.chip.on{border-color:var(--gold);color:var(--gold2)}
+.ep{border:1px solid var(--line);border-radius:10px;background:var(--panel);padding:16px 18px;margin-bottom:18px}
+.ep>header{display:flex;gap:10px;align-items:center;margin-bottom:10px}
+.ep>header .no{font-family:var(--serif);color:var(--gold);font-weight:900;white-space:nowrap}
+.beats{list-style:none;margin:10px 0 0;padding:0;counter-reset:b}
+.beats li{display:grid;grid-template-columns:34px 70px 1fr 64px 34px;gap:8px;align-items:start;margin-bottom:8px}
+.beats li::before{counter-increment:b;content:"P" counter(b,decimal-leading-zero);font-size:12px;color:var(--mute);padding-top:10px}
+.beats textarea{min-height:44px}
+
+/* 設定卡 */
+.cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:14px}
+.card{border:1px solid var(--line);border-radius:10px;background:var(--panel);padding:14px;display:flex;flex-direction:column;gap:8px}
+.card .cardhead{display:flex;gap:8px}
+.lock{font-size:12px;color:var(--gold)}
+
+/* 膠卷 */
+.strip{position:relative;display:flex;gap:6px;overflow-x:auto;background:#050403;padding:18px 10px;border-radius:6px;margin:6px 0 22px;
+  background-image:radial-gradient(circle,var(--bg) 3px,transparent 3.5px),radial-gradient(circle,var(--bg) 3px,transparent 3.5px);
+  background-size:16px 16px,16px 16px;background-position:4px 3px,4px calc(100% - 3px);background-repeat:repeat-x}
+.frame{flex:none;width:118px;height:92px;background:#1b1712;border:1px solid #3a3125;border-radius:3px;padding:6px 7px;color:#d9ccb0;text-decoration:none;font-size:11.5px;line-height:1.4;overflow:hidden;display:flex;flex-direction:column}
+.frame b{font-family:var(--serif);color:#e8cd83;font-size:13px}
+.frame em{font-style:normal;color:#9b8f78}
+.frame:hover{border-color:#c9a24a}
+.stripmeta{font-size:13px;color:var(--mute);margin-top:-12px;margin-bottom:18px}
+
+/* 漫畫頁 */
+.pagewrap{display:grid;grid-template-columns:200px 1fr;gap:18px;margin-bottom:28px;align-items:start}
+.pg{aspect-ratio:3/4;background:#f3eee4;border:6px solid #f3eee4;outline:1px solid var(--line);display:grid;gap:5px;position:sticky;top:84px}
+.pg.l1{grid-template:1fr/1fr}
+.pg.l2{grid-template:1fr 1fr/1fr}
+.pg.l3{grid-template:1.2fr 1fr/1fr 1fr}.pg.l3 .pn:first-child{grid-column:1/3}
+.pg.l4{grid-template:1fr 1fr/1fr 1fr}
+.pn{background:#fff;border:2px solid #1a1510;padding:4px 6px;font-size:10.5px;line-height:1.35;color:#1a1510;overflow:hidden;text-decoration:none}
+.pn b{display:block;font-size:11px}
+.pgtitle{font-family:var(--serif);color:var(--gold);margin:0 0 8px;font-size:15px}
+
+/* 鏡頭卡 */
+.shot{border:1px solid var(--line);border-radius:10px;background:var(--panel);padding:14px 16px;margin-bottom:16px;scroll-margin-top:84px}
+.shot>header{display:flex;align-items:center;gap:10px;margin-bottom:10px}
+.shot>header .no{font-family:var(--serif);font-weight:900;font-size:17px;color:var(--gold2)}
+.shot>header .sp{flex:1}
+.shot .tech{font-size:12px;border:1px solid var(--gold);color:var(--gold);border-radius:999px;padding:1px 9px}
+.shot>div,.shot>label{margin-bottom:10px}
+.lines{display:flex;flex-direction:column;gap:6px}
+.line{display:grid;grid-template-columns:110px 1fr 130px 32px;gap:6px}
+.revise{display:flex;gap:8px;border-top:1px dashed var(--line);padding-top:12px;margin-top:4px}
+.revise input{flex:1}
+
+/* 提示詞 */
+.pr{border:1px solid var(--line);border-radius:10px;background:var(--panel);padding:14px 16px;margin-bottom:14px}
+.pr h3{font-size:16px;color:var(--gold2);margin-bottom:8px}
+.pbox{position:relative;margin-bottom:10px}
+.pbox .lbl{font-size:12px;color:var(--mute);margin-bottom:3px;display:flex;justify-content:space-between;align-items:center}
+.pbox pre{margin:0;white-space:pre-wrap;word-break:break-word;background:var(--bg);border:1px solid var(--line);border-radius:6px;padding:10px 12px;font-family:var(--sans);font-size:13.5px;line-height:1.65;max-height:260px;overflow:auto}
+details summary{cursor:pointer;color:var(--mute);font-size:13px;margin:4px 0 8px}
+
+/* 表格 */
+.tbl{width:100%;border-collapse:collapse;font-size:14px}
+.tblwrap{overflow-x:auto}
+.tbl th,.tbl td{border-bottom:1px solid var(--line);padding:8px 6px;text-align:left;vertical-align:top}
+.tbl th{color:var(--mute);font-weight:500;font-size:12.5px}
+
+.exgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:14px}
+.ex{border:1px solid var(--line);border-radius:10px;padding:16px;background:var(--panel)}
+.ex h3{font-size:16px;color:var(--gold2);margin-bottom:6px}
+.ex p{color:var(--mute);font-size:13px;margin:0 0 12px}
+
+/* MV 企劃 */
+.tbl.ed td{padding:4px 3px}
+.tbl.ed input,.tbl.ed textarea{min-width:92px;padding:6px 8px;font-size:13.5px}
+.tbl.ed textarea{min-height:40px}
+.tbl.ed td:last-child{width:34px}
+.mvsec{border:1px solid var(--line);border-radius:10px;background:var(--panel);padding:16px 18px;margin-bottom:20px}
+.mvsec>h3{color:var(--gold2);margin-bottom:10px}
+.mvsec h4{font-size:14px;color:var(--text);margin:16px 0 6px;font-weight:700}
+.mvsec .lblrow{display:flex;justify-content:space-between;align-items:center;gap:8px}
+textarea.lyrics{min-height:360px;font-family:var(--serif);font-size:15px;line-height:1.85}
+.tc{font-family:var(--serif);font-size:12.5px;color:var(--gold);white-space:nowrap}
+.mvstat{display:flex;flex-wrap:wrap;gap:8px 18px;font-size:14px;margin:6px 0 10px}
+.mvstat b{color:var(--gold2);font-family:var(--serif)}
+.cardtxt{font-size:13px;color:var(--mute);border-left:3px solid var(--gold);padding-left:8px;margin:0 0 12px}
+
+/* 對話框 */
+.modal{position:fixed;inset:0;background:rgba(0,0,0,.72);z-index:50;display:flex;align-items:center;justify-content:center;padding:calc(env(safe-area-inset-top,0px) + 16px) 16px calc(env(safe-area-inset-bottom,0px) + 16px)}
+.modal[hidden]{display:none}
+.mbox{background:var(--panel);border:1px solid var(--gold);border-radius:12px;width:min(760px,100%);max-height:100%;overflow:auto;padding:18px 20px}
+.mbox>header{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;gap:10px}
+.mbox h3{color:var(--gold2)}
+.mbox textarea{min-height:150px;font-size:13px}
+.stream{white-space:pre-wrap;word-break:break-word;background:var(--bg);border:1px solid var(--line);border-radius:6px;padding:10px;font-size:12.5px;max-height:300px;overflow:auto;min-height:60px;color:var(--mute)}
+.step{font-family:var(--serif);color:var(--gold);margin:14px 0 6px;font-size:15px}
+.toast{position:fixed;left:50%;bottom:calc(env(safe-area-inset-bottom,0px) + 90px);transform:translateX(-50%);background:var(--gold);color:var(--ink);padding:8px 18px;border-radius:999px;font-size:14px;z-index:60;opacity:0;pointer-events:none;transition:opacity .2s}
+.toast.show{opacity:1}
+
+@media (max-width:820px){
+  .shell{grid-template-columns:minmax(0,1fr)}
+  .aisel>span{display:none}
+  .rail{position:fixed;top:auto;bottom:0;left:0;right:0;height:auto;z-index:30;display:flex;overflow-x:auto;padding:0 0 env(safe-area-inset-bottom,0px);background:var(--bg);border-right:0;border-top:1px solid var(--line)}
+  .rail button{flex:none;width:auto;flex-direction:column;align-items:center;gap:0;padding:8px 13px;border-left:0;border-top:3px solid transparent;font-size:12.5px}
+  .rail button.on{border-top-color:var(--gold)}
+  .rail button i{width:auto;font-size:11px}
+  .rail .railnote{display:none}
+  main{padding:18px 14px 110px}
+  .top{padding:8px 14px;flex-wrap:wrap;gap:8px}
+  .brand{flex:1 1 100%}
+  .brand b{font-size:18px}.brand b span{display:none}
+  .grid2,.grid3{grid-template-columns:1fr}
+  .grid4{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .beats li{grid-template-columns:62px 1fr 34px;grid-template-areas:"s t x" ". h h"}
+  .beats li::before{display:none}
+  .line{grid-template-columns:1fr 1fr 32px}.line input:nth-child(2){grid-column:1/3;grid-row:2}
+  .pagewrap{grid-template-columns:1fr}
+  .pg{position:static;max-width:220px}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+<header class="top">
+  <div class="brand"><small>董元創作室</small><b id="ttl">小說影視化工坊</b></div>
+  <span class="sync" id="sync">連線中…</span>
+  <div class="aisel" id="engBox"><span>引擎</span><select id="engSel" aria-label="建議引擎"></select></div>
+  <button class="themebtn" id="themeBtn" type="button">亮／暗</button>
+</header>
+<div class="shell">
+  <nav class="rail" id="rail" aria-label="製作流程"></nav>
+  <main id="view"></main>
+</div>
+<div class="modal" id="modal" hidden><div class="mbox" role="dialog" aria-modal="true"><header><h3 id="mTitle"></h3><button class="btn sm" data-act="closeModal">關閉</button></header><div id="mBody"></div></div></div>
+<div class="toast" id="toast"></div>
+<input type="file" id="backupIn" accept=".json" data-file="backup" hidden>
+
+<script>
+/* ========== 基本資料 ========== */
+const KEY='dy-film-studio-gas';
+/* MV 企劃資料：對應「MV 企劃書」七大段 */
+function MVDEF(){return {brief:{sec:220,pov:'',note:''},title:'',length:'',genre:'',visual:'',curveSum:'',tagline:'',concept:'',
+  layers:[{who:'路人',see:'',feel:''},{who:'讀者',see:'',feel:''}],spoilers:'',curve:[],tears:[],
+  song:{bpm:'',key:'',vocal:'',length:'',style:'',exclude:''},arrange:[],lyrics:'',lyricNotes:'',
+  bgm:[],silence:'',endCards:[],endLine:'',bookTitle:'',eggs:[]};}
+function fixMV(m){const b=MVDEF();m=(m&&typeof m==='object')?m:{};const o={...b,...m,brief:{...b.brief,...(m.brief||{})},song:{...b.song,...(m.song||{})}};
+  ['layers','curve','tears','arrange','bgm','endCards','eggs'].forEach(k=>{if(!Array.isArray(o[k]))o[k]=b[k];});return o;}
+const DEF=()=>({project:{title:'未命名作品',genre:'謀略',target:'drama',style:'hollywood',aspect:'9:16',imgTool:'mj',platform:'vids',shotDefaults:{angle:'平視',lens:'標準',motion:'常速'}},
+  source:{text:''},episodes:[],bible:{characters:[],scenes:[],props:[]},shots:{},audio:{},mv:MVDEF(),ui:{view:'projects',ep:null,engine:'task',project:null}});
+const UIKEY=KEY+'-ui',CKEY=KEY+'-cache-';
+const HAS_GAS=!!(window.google&&google.script&&google.script.run);
+let S=DEF(),CUR={id:null,updated:0},PROJECTS=[],ROOTURL='',LISTSTATE='讀取作品清單中…',LASTJS='',LC=null;
+try{const u=JSON.parse(localStorage.getItem(UIKEY)||'null');if(u)S.ui={...S.ui,...u};}catch(e){}
+const gs=(fn,...a)=>new Promise((res,rej)=>{if(!HAS_GAS){rej(new Error('nogas'));return;}google.script.run.withSuccessHandler(res).withFailureHandler(rej)[fn](...a);});
+const dataOf=()=>({project:S.project,source:S.source,episodes:S.episodes,bible:S.bible,shots:S.shots,audio:S.audio,mv:S.mv});
+function applyData(d){const b=DEF();S={...b,...d,project:{...b.project,...(d.project||{}),shotDefaults:{...b.project.shotDefaults,...((d.project||{}).shotDefaults||{})}},bible:{...b.bible,...(d.bible||{})},mv:fixMV(d.mv),ui:S.ui};}
+function saveUI(){try{localStorage.setItem(UIKEY,JSON.stringify(S.ui))}catch(e){}}
+function cacheLocal(pending){if(!CUR.id)return;try{localStorage.setItem(CKEY+CUR.id,JSON.stringify({data:dataOf(),pending,base:CUR.updated,at:Date.now()}));}catch(e){}}
+const hhmm=t=>{const d=new Date(t);return String(d.getHours()).padStart(2,'0')+':'+String(d.getMinutes()).padStart(2,'0');};
+const fmtDate=t=>{const d=new Date(t);return `${d.getFullYear()}/${d.getMonth()+1}/${d.getDate()} ${hhmm(t)}`;};
+function setSync(k,t){const el=document.getElementById('sync');if(el){el.className='sync '+(k||'');el.textContent=t;}}
+let dirty=false,saving=false,saveT;
+function save(){saveUI();if(!CUR.id)return;dirty=true;cacheLocal(true);clearTimeout(saveT);saveT=setTimeout(()=>flush(),1500);}
+async function flush(force){
+  if(!CUR.id)return;
+  if(saving){clearTimeout(saveT);saveT=setTimeout(()=>flush(force),1200);return;}
+  const js=JSON.stringify(dataOf());
+  if(!force&&js===LASTJS){dirty=false;cacheLocal(false);return;}
+  if(!dirty&&!force)return;
+  saving=true;dirty=false;setSync('','儲存到雲端…');
+  try{
+    const r=await gs('saveProject',CUR.id,js,S.project.title||'未命名作品',CUR.updated||0,!!force);
+    if(r.conflict){saving=false;dirty=true;conflictModal(r);return;}
+    CUR.updated=r.updated;LASTJS=js;cacheLocal(false);setSync('ok','已同步 '+hhmm(r.updated));
+    const p=PROJECTS.find(x=>x.id===CUR.id);if(p){p.title=S.project.title;p.updated=r.updated;}
+  }catch(e){dirty=true;setSync('bad',HAS_GAS?'離線中，已暫存本機':'本機預覽');if(HAS_GAS){clearTimeout(saveT);saveT=setTimeout(()=>flush(),15000);}saving=false;return;}
+  saving=false;if(dirty){clearTimeout(saveT);saveT=setTimeout(()=>flush(),1500);}
+}
+function conflictModal(r){LC=r;openModal('雲端有較新的版本',`<p>這部作品在其他裝置（${fmtDate(r.updated)}）存過較新的內容，和這台裝置的修改不一樣。</p><p class="hint">選「載入雲端版本」會放棄這台裝置尚未上傳的修改；選「用這台的內容覆蓋」會取代雲端版本。</p><div class="row"><button class="btn gold" data-act="useRemote">載入雲端版本</button><button class="btn warn" data-act="forceMine">用這台的內容覆蓋雲端</button></div>`);}
+async function openProject(id){
+  setSync('','讀取中…');let cache=null;try{cache=JSON.parse(localStorage.getItem(CKEY+id)||'null')}catch(e){}
+  try{
+    const r=await gs('loadProject',id);
+    if(cache&&cache.pending&&cache.base>=r.updated){applyData(cache.data);CUR={id,updated:r.updated};LASTJS='';dirty=true;flush();}
+    else if(cache&&cache.pending){applyData(cache.data);CUR={id,updated:cache.base};LASTJS='';dirty=true;conflictModal({updated:r.updated,remote:r.content});}
+    else{applyData(JSON.parse(r.content));CUR={id,updated:r.updated};LASTJS=JSON.stringify(dataOf());dirty=false;cacheLocal(false);setSync('ok','已同步 '+hhmm(r.updated));}
+  }catch(e){
+    if(cache){applyData(cache.data);CUR={id,updated:cache.base};setSync('bad','離線中，顯示本機暫存');}
+    else{setSync('bad','讀取失敗');toast('讀取失敗，請確認網路後再試');return;}
+  }
+  S.ui.project=id;if(S.ui.view==='projects')S.ui.view='import';saveUI();renderTop();render();
+}
+async function createProject(title,data){
+  if(!HAS_GAS){toast('請先部署到 Apps Script，才能建立雲端作品');return;}
+  const id='p'+Date.now().toString(36)+Math.random().toString(36).slice(2,6);
+  const d=data?{...data}:dataOf.call(null);
+  const b=DEF();const payload=data?{project:{...b.project,...(data.project||{}),title},source:data.source||b.source,episodes:data.episodes||[],bible:{...b.bible,...(data.bible||{})},shots:data.shots||{},audio:data.audio||{},mv:fixMV(data.mv)}
+    :{project:{...b.project,title},source:b.source,episodes:[],bible:b.bible,shots:{},audio:{},mv:MVDEF()};
+  setSync('','建立中…');
+  try{await gs('saveProject',id,JSON.stringify(payload),title,0,true);PROJECTS.unshift({id,title,updated:Date.now()});S.ui.view='import';await openProject(id);toast(`已建立《${title}》`);}
+  catch(e){setSync('bad','建立失敗');toast('建立失敗：'+(e.message||e));}
+}
+async function refreshList(){
+  if(!HAS_GAS){LISTSTATE='本機預覽模式：部署到 Apps Script 後，作品才會存到雲端。';render();return;}
+  try{const info=await gs('getInfo');ROOTURL=info.rootUrl;PROJECTS=info.projects;LISTSTATE=PROJECTS.length?'':'還沒有作品。輸入名稱後按「建立作品」。';}
+  catch(e){LISTSTATE='讀取作品清單失敗：'+(e.message||e);}
+  if(S.ui.view==='projects')render();
+}
+const $=s=>document.querySelector(s);
+const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const uid=()=>Math.random().toString(36).slice(2,9);
+function setPath(o,p,v){const k=p.split('.');let x=o;for(let i=0;i<k.length-1;i++){x=x[k[i]];if(x==null)return;}x[k[k.length-1]]=v;}
+const opts=(arr,cur)=>arr.map(v=>`<option ${v==cur?'selected':''}>${esc(v)}</option>`).join('');
+const opts2=(arr,cur)=>arr.map(([v,l])=>`<option value="${esc(v)}" ${v==cur?'selected':''}>${esc(l)}</option>`).join('');
+const unit=()=>S.project.target==='comic'?'話':S.project.target==='mv'?'段':'集';
+const isMV=()=>S.project.target==='mv';
+const getPath=(o,p)=>p.split('.').reduce((x,k)=>x==null?x:x[k],o);
+/* MV：歌詞行（主唱／合唱，或語氣標「歌詞」）不是角色台詞，不做對嘴配音 */
+const isLyric=d=>/主唱|歌詞|合唱|和聲|vocal|singer/i.test(d.who||'')||d.tone==='歌詞';
+const fmtT=x=>`${Math.floor(x/60)}:${String(Math.round(x)%60).padStart(2,'0')}`;
+function mvTimes(){const m={};let t=0;S.episodes.forEach(e=>(S.shots[e.id]||[]).forEach(s=>{if(!s.id)s.id=uid();const d=+s.duration||0;m[s.id]={a:t,b:t+d};t+=d;}));m._total=t;return m;}
+const mvSegStart=idx=>S.episodes.slice(0,idx).reduce((t,e)=>t+(S.shots[e.id]||[]).reduce((u,s)=>u+(+s.duration||0),0),0);
+const tcOf=(s,T)=>{const x=(T||mvTimes())[s.id];return x?`${fmtT(x.a)}–${fmtT(x.b)}`:'';};
+const durRule=P=>{P=P||plat();return isMV()?`2～${P.max} 的整數秒（MV 節奏快，常用 3～10 秒）`:`［${P.durs.join('、')}］`;};
+function toast(m){const t=$('#toast');t.textContent=m;t.classList.add('show');clearTimeout(t._t);t._t=setTimeout(()=>t.classList.remove('show'),2400);}
+
+const GENRES=['戰爭','推理','謀略','懸疑','言情','奇幻','科幻','歷史','都市','其他'];
+const SIZES=['大遠景','遠景','全景','中景','近景','特寫','大特寫'];
+const SIZE_EN={'大遠景':'extreme wide shot','遠景':'wide shot','全景':'full shot','中景':'medium shot','近景':'medium close-up','特寫':'close-up','大特寫':'extreme close-up'};
+const CAMS=['固定','推鏡','拉鏡','搖鏡','跟拍','升降','手持','環繞'];
+const CAM_EN={'固定':'static camera','推鏡':'slow push in','拉鏡':'pull back','搖鏡':'pan','跟拍':'tracking shot','升降':'crane shot','手持':'handheld','環繞':'orbit around subject'};
+const ANGLES=['平視','仰角','俯角','空拍'];
+const ANGLE_EN={'平視':'eye-level angle','仰角':'low angle','俯角':'high angle','空拍':'aerial drone shot'};
+const LENSES=['廣角','標準','長焦','微距'];
+const LENS_EN={'廣角':'wide-angle 24mm lens','標準':'standard 50mm lens','長焦':'telephoto 85mm lens','微距':'macro lens'};
+const LENS_ZH={'廣角':'廣角 24mm','標準':'標準 50mm','長焦':'長焦 85mm','微距':'微距'};
+const MOTIONS=['常速','慢動作','縮時'];
+const MOTION_EN={'常速':'real-time speed','慢動作':'slow motion','縮時':'hyperlapse'};
+const shotDef=()=>({angle:'平視',lens:'標準',motion:'常速',...((S&&S.project&&S.project.shotDefaults)||{})});
+const TECHS=['','情緒特寫','關鍵物件','接觸碰撞','廣角全景','縮時','關鍵模糊','替換物件'];
+const STAGES=['起','承','轉','合'];
+const PLAT={vids:{zh:'Google Vids',durs:[4,6,8,10],max:10},veo:{zh:'Flow（Veo 3.1）',durs:[4,6,8],max:8},omni:{zh:'Flow（Omni）',durs:[4,6,8,10],max:10}};
+const plat=()=>PLAT[S.project.platform]||PLAT.vids;
+const METHOD={text:'文字生影片',ingredients:'素材生影片',frames:'首尾幀'};
+const STATUS_ZH={'':'未拍',ok:'成功',fail:'失敗'};
+const FIXOPTS=['淡化暴力','減少人數','簡化動作','縮短台詞','改成無對白'];
+const TRACK=[['size','景別'],['camera','運鏡'],['angle','攝影機角度'],['lens','鏡頭焦段'],['motion','動態速度'],['duration','時長'],['technique','轉譯手法'],['scene','場景'],['chars','出場角色'],['visualZh','中文描述'],['visualEn','英文描述'],['lighting','光影'],['dialogue','對白'],['sfx','音效'],['screenText','畫面指定文字']];
+function snap(s){const o={};TRACK.forEach(([k])=>o[k]=JSON.parse(JSON.stringify(s[k]??'')));return o;}
+function ensureShot(s){const D=shotDef();if(!s.id)s.id=uid();if(!Array.isArray(s.dialogue))s.dialogue=[];if(!Array.isArray(s.chars))s.chars=[];if(!ANGLES.includes(s.angle))s.angle=D.angle;if(!LENSES.includes(s.lens))s.lens=D.lens;if(!MOTIONS.includes(s.motion))s.motion=D.motion;if(s.screenText==null)s.screenText='';
+  if(s.orig)['angle','lens','motion','screenText'].forEach(k=>{if(!(k in s.orig))s.orig[k]=s[k];});
+  if(!s.method)s.method='text';if(s.status==null)s.status='';if(s.endZh==null)s.endZh='';if(s.endEn==null)s.endEn='';if(!s.orig)s.orig=snap(s);return s;}
+const fmtV=(k,v)=>k==='duration'?v+' 秒':k==='lens'?(LENS_ZH[v]||v||'無'):(v===''||v==null?'無':v);
+function diffs(s){if(!s.orig)return [];const out=[];TRACK.forEach(([k,l])=>{const a=s.orig[k],b=s[k]??'';if(JSON.stringify(a)===JSON.stringify(b))return;
+  if(['visualZh','visualEn','lighting','sfx'].includes(k))out.push({k,l,t:`${l}已增修`,from:a,to:b});
+  else if(k==='screenText')out.push({k,l,t:`${l}：${a||'無'} → ${b||'無'}`,from:a,to:b});
+  else if(k==='dialogue')out.push({k,l,t:'對白已修改',from:a,to:b});
+  else if(k==='chars')out.push({k,l,t:`${l}：${(a||[]).join('、')||'無'} → ${(b||[]).join('、')||'無'}`});
+  else out.push({k,l,t:`${l}：${fmtV(k,a)} → ${fmtV(k,b)}`});});return out;}
+function diffInner(s,i){const d=diffs(s);if(!d.length)return '';return `<b>已修改</b><ul>${d.map(x=>`<li>${esc(x.t)}</li>`).join('')}</ul><button class="btn gold sm" data-act="rewrite" data-i="${i}">依我的修改重寫（複製指令給 AI）</button><button class="btn sm" data-act="rebase" data-i="${i}">不用重寫，設為新基準</button>`;}
+function refreshDiff(epId,i){const el=document.getElementById('df-'+i);const s=(S.shots[epId]||[])[i];if(el&&s)el.innerHTML=diffInner(s,i);}
+const STYLE={
+  hollywood:{zh:'好萊塢電影寫實',en:'cinematic film still, Hollywood blockbuster look, photorealistic, anamorphic lens, shallow depth of field, film grain, color graded'},
+  livecomic:{zh:'彩色真人漫畫',en:'live-action color comic panel, photorealistic actors, dramatic graphic novel composition, bold cinematic lighting'},
+  wardoc:{zh:'戰地紀實',en:'gritty war documentary photography, desaturated tones, handheld realism, dust and smoke'},
+  anime:{zh:'日系動漫',en:'high quality Japanese anime style, clean line art, cel shading, detailed background'},
+  manhwa:{zh:'韓式條漫',en:'Korean webtoon manhwa style, soft digital painting, glossy highlights'},
+  ink:{zh:'水墨寫意',en:'Chinese ink wash painting style, expressive brushwork, muted palette'}
+};
+const VIEWS=[['import','匯入小說'],['breakdown','劇情拆解'],['bible','設定卡'],['board','分鏡'],['prompts','提示詞'],['shoot','出片模式'],['audio','對白與聲音'],['export','匯出']];
+const views=()=>isMV()?[['import','匯入小說'],['mv','MV 企劃'],['breakdown','段落拆解'],['bible','設定卡'],['board','分鏡'],['prompts','提示詞'],['shoot','出片模式'],['audio','歌曲與聲音'],['export','匯出']]:VIEWS;
+const viewName=k=>(views().find(v=>v[0]===k)||['',''])[1];
+
+/* ========== AI（手動貼上） ========== */
+const ENGINES=[['task','依任務建議'],['Opus 5.5','Opus 5.5'],['Sonnet 5','Sonnet 5'],['Haiku 4.5','Haiku 4.5']];
+const TASK={breakdown:{zh:'劇情拆解',engine:'Opus 5.5'},board:{zh:'分鏡生成',engine:'Opus 5.5'},bible:{zh:'設定卡',engine:'Sonnet 5'},audio:{zh:'配樂設計',engine:'Sonnet 5'},revise:{zh:'單鏡修改',engine:'Haiku 4.5'},mvPlan:{zh:'MV 企劃',engine:'Opus 5.5'}};
+const engineFor=t=>S.ui.engine==='task'?(TASK[t]?.engine||'Sonnet 5'):S.ui.engine;
+let pending=null,ctl=null;const sampleFn=null;
+function parseJSON(t){t=String(t).replace(/```json|```/g,'').trim();const a=t.search(/[\{\[]/);const z=Math.max(t.lastIndexOf('}'),t.lastIndexOf(']'));if(a<0||z<a)throw new Error('找不到 JSON');return JSON.parse(t.slice(a,z+1));}
+function runAI(title,prompt,apply,task){pending={title,prompt,apply,task};showManual();}
+function showManual(note){
+  const eng=engineFor(pending.task);
+  openModal(pending.title,`<p class="engnote">請在 <b>Claude ${esc(eng)}</b> 的對話中貼上${S.ui.engine==='task'&&TASK[pending.task]?`（${esc(TASK[pending.task].zh)}建議用這個引擎）`:''}。先在 Claude 對話上方的模型選單切換好，再貼指令。</p>${note?`<p class="hint" style="color:var(--red)">${esc(note)}</p>`:''}
+  <div class="step">第一步　複製指令，貼到 Claude 對話</div>
+  <textarea id="mPrompt" readonly>${esc(pending.prompt)}</textarea>
+  <div class="row"><button class="btn gold" data-act="copyPrompt">複製指令</button></div>
+  <div class="step">第二步　把 Claude 回覆的 JSON 整段貼回這裡</div>
+  <textarea id="mPaste" placeholder="貼上 { … } 開頭的回覆"></textarea>
+  <div class="row"><button class="btn gold" data-act="applyManual">套用結果</button></div>`);
+}
+function openModal(t,h){$('#mTitle').textContent=t;$('#mBody').innerHTML=h;$('#modal').hidden=false;}
+function closeModal(){$('#modal').hidden=true;$('#mBody').innerHTML='';}
+
+/* ========== 提示詞模板（給 AI 的指令） ========== */
+const bibleBrief=()=>{const b=S.bible;return `角色：${b.characters.map(c=>`${c.name}（${c.role||''}；${c.zh||''}）`).join('／')||'尚未設定'}\n場景：${b.scenes.map(s=>s.name).join('、')||'尚未設定'}\n道具：${b.props.map(s=>s.name).join('、')||'尚未設定'}`;};
+const srcCut=n=>{const t=S.source.text||'';return t.length>n?t.slice(0,n)+'\n（以下略）':t;};
+const mvBrief=()=>{const m=S.mv;return [m.title?`曲名：《${m.title}》${m.length?`，片長 ${m.length}`:''}${m.genre?`，曲風：${m.genre}`:''}`:'',m.concept?`核心概念：${m.concept}`:'',
+  m.spoilers?`不劇透原則：\n${m.spoilers}`:'',
+  m.curve.length?'情緒與節奏曲線：\n'+m.curve.map(c=>`${c.time}｜${c.part}｜${c.emotion}｜音樂：${c.music}｜畫面：${c.tone}`).join('\n'):'',
+  m.tears.length?'淚點地圖：\n'+m.tears.map(t=>`${t.time}｜${t.point}｜${t.power}｜${t.method}`).join('\n'):'',
+  m.eggs.length?'讀者彩蛋：\n'+m.eggs.map(t=>`${t.time}｜${t.egg}｜${t.ref}`).join('\n'):'',
+  m.endCards.length?'片尾字卡：\n'+m.endCards.map(c=>`${c.word}——${c.q}`).join('\n'):'',m.endLine?`片尾金句：${m.endLine}`:'',
+  m.lyrics?`歌詞：\n"""\n${m.lyrics}\n"""`:''].filter(Boolean).join('\n')||'（MV 企劃尚未填寫）';};
+const PR={
+mvPlan:()=>{const m=S.mv,br=m.brief;return `你是華語流行音樂 MV 導演兼作詞人，要替小說《${S.project.title}》（${S.project.genre}）做一支行銷 MV，目的是讓沒讀過的人被打動、讀過的人發現彩蛋。
+目標片長：約 ${br.sec||220} 秒；畫面比例 ${S.project.aspect}；畫風：${STYLE[S.project.style].zh}。${br.pov?`\n歌曲視角／主題：${br.pov}`:''}${br.note?`\n作者補充：${br.note}`:''}
+規則：
+1. 雙層觀看設計：layers 寫「路人」與「讀者」兩種觀眾各自看到什麼（see）、感受到什麼（feel）。
+2. 不劇透原則：spoilers 用條列（每行一條，「- 」開頭）寫出不能出現的關鍵反轉線索與替代做法，片尾只拋問題不給答案。
+3. 情緒與節奏曲線：curve 依時間切 6～9 段，part 用前奏／主歌一／副歌一／主歌二／橋段／口白／終段副歌／靜默／片尾等名稱，time 用「0:00–0:35」格式並連續到片尾；emotion 情緒、music 音樂層次、tone 畫面調性（色溫、飽和度、鏡位）。建議走「平淡 → 裂縫 → 堆疊 → 高點 → 靜默 → 問句鉤子」。
+4. 淚點地圖：tears 列 4～7 個淚點，power 從［輕、中、強、最強、暖收］選，method 寫手法（情緒特寫、關鍵物件、接觸碰撞、廣角全景、縮時、關鍵模糊、替換物件、全曲靜音只留一句等）。
+5. 歌曲：song 寫 bpm、key（調性，終段副歌可升半音）、vocal（主唱聲部與唱法）、length（MV 版／單曲版長度）；arrange 寫漸進式編曲，每段加一層樂器；song.style 是貼進 Suno「Style of Music」的英文提示詞（200 字元內）；song.exclude 是 Suno「Exclude Styles」英文。
+6. 歌詞 lyrics：可直接貼進 Suno 的 Lyrics 欄，用 [Intro]、[Verse 1]、[Chorus 1]、[Verse 2]、[Bridge]、[Spoken]、[Final Chorus]、[Outro] 等標籤，標籤後加「（0:35–1:10｜說明）」；用小說裡的具體物件與畫面寫詞，不要空泛。若用方言，句後換行加括號中文意思。副歌一與終段副歌只改一兩個字，讓意思翻轉。lyricNotes 條列設計重點。
+7. BGM：bgm 至少兩首——純音樂版（用途、design 寫編曲差異、prompt 為 Suno 英文提示詞，結尾加 no vocals）與片尾 cue（design 用「時間｜設計」逐行寫節拍與驟停點）；silence 寫高潮後靜默段的音效順序。
+8. 片尾：endCards 5～6 組「詞＋問句」（詞取自小說關鍵物件，問句讓路人想到自己）；endLine 是片尾金句（可兩行）；bookTitle 寫書名。
+9. 讀者彩蛋：eggs 列出只有讀過的人才懂的細節，ref 寫對應章節或意象。
+10. 全部使用繁體中文（Suno 提示詞除外）。
+只輸出 JSON，不要任何說明文字或 Markdown：
+{"title":"曲名","length":"3 分 40 秒（16:9 橫式）","genre":"曲風","visual":"畫面風格","curveSum":"平淡 → 裂縫 → …","tagline":"宣傳金句","concept":"核心概念 2～4 句","layers":[{"who":"路人","see":"","feel":""},{"who":"讀者","see":"","feel":""}],"spoilers":"- …\\n- …","curve":[{"time":"0:00–0:35","part":"前奏","emotion":"","music":"","tone":""}],"tears":[{"time":"0:55","point":"","power":"輕","method":""}],"song":{"bpm":"約 70 BPM，4/4 拍","key":"","vocal":"","length":"","style":"","exclude":""},"arrange":[{"part":"前奏","inst":""}],"lyrics":"","lyricNotes":"- …","bgm":[{"name":"BGM-A：純音樂版","use":"","design":"","prompt":""}],"silence":"","endCards":[{"word":"","q":""}],"endLine":"","bookTitle":"","eggs":[{"time":"","egg":"","ref":""}]}
+
+設定卡：
+${bibleBrief()}
+
+小說原文：
+"""
+${srcCut(12000)}
+"""`;},
+breakdown:(n,b)=>isMV()?`你是 MV 導演。依照下面的 MV 企劃，把 MV 依歌曲結構切成 ${n} 段（每段＝歌曲的一個段落，例如前奏、主歌一、副歌一、主歌二、橋段、口白＋終段副歌、靜默、片尾）。
+作品：《${S.project.title}》，題材：${S.project.genre}，目標片長約 ${S.mv.brief.sec||220} 秒。
+規則：
+1. title 寫「段落名（起訖時間）」，例如「前奏（0:00–0:35）」，時間要和情緒曲線一致並連續。
+2. summary 寫這段的情緒、音樂層次與畫面調性；hook 寫這段的淚點、彩蛋或鉤子。
+3. 每段約 ${b} 個 beats，每個 beat 是一個可拍攝的具體畫面事件，要配合這段的歌詞意象但不要逐字圖解；標註起承轉合（起／承／轉／合）與勾子強度 1～5。
+4. 嚴守不劇透原則；全部使用繁體中文。
+只輸出 JSON，不要任何說明文字或 Markdown：
+{"episodes":[{"title":"前奏（0:00–0:35）","summary":"","hook":"","beats":[{"text":"畫面事件","stage":"起","hook":3}]}]}
+
+MV 企劃：
+${mvBrief()}
+
+設定卡：
+${bibleBrief()}
+
+小說原文（節錄）：
+"""
+${srcCut(8000)}
+"""`:`你是資深影視改編編劇。請把以下小說內容改編拆解成${S.project.target==='comic'?`漫畫共 ${n} 話`:`AI 短劇共 ${n} 集`}。
+作品：《${S.project.title}》，題材：${S.project.genre}。
+規則：
+1. 每${unit()}約 ${b} 個劇情點，每個劇情點是一個可拍攝／可繪製的具體事件。
+2. 每個劇情點標註起承轉合位置（起／承／轉／合）與勾子強度 1～5（5 最強）。
+3. 每${unit()}結尾都要留懸念勾子；保留原作對白與關鍵細節。
+4. 全部使用繁體中文。
+只輸出 JSON，不要任何說明文字或 Markdown：
+{"episodes":[{"title":"本${unit()}標題","summary":"一句話梗概","hook":"${unit()}尾勾子","beats":[{"text":"劇情點描述","stage":"起","hook":3}]}]}
+
+小說原文：
+"""
+${srcCut(15000)}
+"""`,
+bible:()=>`你是影視美術指導。根據以下小說內容，建立角色、場景、道具設定卡，用於 AI 繪圖時保持跨鏡頭一致（不跑臉）。
+畫風：${STYLE[S.project.style].zh}。
+規則：
+1. 角色的 en 欄位是可直接放進繪圖提示詞的英文外觀鎖定描述：年齡、臉型、五官特徵、髮型髮色、體型、固定服裝、標誌性配件，30～60 個英文單字。
+2. 場景與道具的 en 欄位是英文視覺描述（材質、年代、光線、色調）。
+3. voice 寫聲線設定（年齡感、音色、語速、口頭禪）。
+4. 中文使用繁體中文。
+${S.bible.characters.length?`已存在的角色（請沿用同名，不要重複建立）：${S.bible.characters.map(c=>c.name).join('、')}\n`:''}只輸出 JSON：
+{"characters":[{"name":"","role":"主角／反派／配角","zh":"中文外觀與性格","en":"","voice":""}],"scenes":[{"name":"","zh":"","en":""}],"props":[{"name":"","zh":"","en":""}]}
+
+小說原文：
+"""
+${srcCut(14000)}
+"""`,
+board:(ep,idx)=>{const comic=S.project.target==='comic',mv=isMV();return `你是好萊塢等級的${comic?'彩色漫畫分鏡師':mv?'MV 導演':'AI 短劇導演'}。把第 ${idx+1} ${unit()}的${mv?'畫面事件':'劇情點'}拆成逐${comic?'格':'鏡頭'}分鏡。
+作品：《${S.project.title}》（${S.project.genre}），畫風：${STYLE[S.project.style].zh}，畫面比例 ${S.project.aspect}。
+規則：
+${comic?`1. 以「頁」為單位，每頁 1～4 格：高潮或震撼畫面用 1 格大圖，對話密集用 3～4 格。page 從 1 開始，panel 是該頁第幾格，panels 是該頁總格數。
+2. 每格可加 onomatopoeia（狀聲詞，如「砰！」），對白要短，適合放進對白框。`:mv?`1. 這是音樂 MV 的一段，出片平台是 ${plat().zh}。每個鏡頭 duration 為 ${durRule()}；本段所有鏡頭 duration 加總要等於本段標題裡的起訖時間長度。
+2. 歌詞放進 dialogue：who 寫「主唱（女聲）」這類主唱名稱、tone 寫「歌詞」，依時間順序把本段歌詞分配到各鏡（一鏡一到兩句）；角色真正開口說的台詞才用角色名。純音樂鏡頭 dialogue 留空陣列。`:`1. 出片平台是 ${plat().zh}，每個鏡頭 duration 只能從［${plat().durs.join('、')}］選（單段上限 ${plat().max} 秒）；台詞總長要能在該秒數內自然說完（中文約每秒 3～4 字）。
+2. 鏡頭之間要有節奏變化，每集開頭 3 秒內要有抓人的畫面。`}
+3. size 從［${SIZES.join('、')}］選；camera 從［${CAMS.join('、')}］選；angle（攝影機角度）從［${ANGLES.join('、')}］選；lens（鏡頭焦段）從［${LENSES.join('、')}］選；motion（動態速度）從［${MOTIONS.join('、')}］選。依情緒選擇：壓迫感用仰角或長焦、孤立感用俯角或空拍、關鍵物件用微距、高潮瞬間用慢動作、時間流逝用縮時。${S.project.platform==='omni'?'\n   出片平台是 Omni，能原生渲染畫面文字；劇情需要招牌、信件、標語、螢幕字時，把要出現的短文字（10 字內為佳）寫進 screenText，不需要就留空。':''}
+4. 原文描述平淡處，改用轉譯手法並填入 technique：情緒特寫、關鍵物件、接觸碰撞、廣角全景、縮時、關鍵模糊、替換物件；不需要時留空。
+5. scene 與 chars 必須使用設定卡裡的名稱。
+6. visualZh 寫中文畫面描述（人物動作、臉部肌肉層級的微表情、構圖、前後景）；visualEn 是對應英文；lighting 用英文寫光影氛圍。
+7. 對白用繁體中文，簡短有力；tone 寫語氣情緒。sfx 寫音效${mv?'，並在需要時註明 BGM 變化（例如「BGM：鋼琴單音」「全曲靜音」）':''}。${mv?`
+8. 字卡、螢幕或儀表上的文字、片尾問句與金句，寫進 screenText（剪輯時後製加上）；不需要就留空。
+9. 嚴守企劃裡的不劇透原則；淚點與彩蛋要放在企劃指定的時間點附近，用轉譯手法呈現。
+10. 畫面要呼應歌詞意象但不要逐字圖解；同一意象可在前後段落重複出現形成呼應（例如片頭與片尾同一個鋼琴單音、同一個物件）。`:''}
+只輸出 JSON：
+{"shots":[{${comic?'"page":1,"panel":1,"panels":2,':''}"beat":1,"size":"中景","camera":"推鏡","angle":"平視","lens":"標準","motion":"常速","duration":${mv?5:8},"scene":"","chars":[""],"visualZh":"","visualEn":"","lighting":"","dialogue":[{"who":"","line":"","tone":""}],"sfx":"","technique":""${comic?',"onomatopoeia":""':''}${!comic&&(mv||S.project.platform==='omni')?',"screenText":""':''}}]}
+
+本${unit()}：${ep.title}
+梗概：${ep.summary||''}
+${mv?'淚點／彩蛋':unit()+'尾勾子'}：${ep.hook||''}
+${mv?'畫面事件':'劇情點'}：
+${ep.beats.map((b,i)=>`P${i+1}［${b.stage}｜勾子${b.hook}］${b.text}`).join('\n')}
+${mv&&mvSegStart(idx)>0?`\n前一段結束時間：${fmtT(mvSegStart(idx))}（若前面段落已有分鏡，本段從這裡接續）\n`:''}${mv?`\nMV 企劃：\n${mvBrief()}\n`:''}
+設定卡：
+${bibleBrief()}
+
+參考原文（節錄）：
+"""
+${srcCut(7000)}
+"""`;},
+revise:(sh,ins)=>`你是影視分鏡導演。依照修改意見重寫這一個${S.project.target==='comic'?'漫畫格':'鏡頭'}，其他沒被要求的欄位盡量保留。
+修改意見：${ins}
+轉譯手法可選：情緒特寫、關鍵物件、接觸碰撞、廣角全景、縮時、關鍵模糊、替換物件。景別可選：${SIZES.join('、')}；運鏡可選：${CAMS.join('、')}；攝影機角度 angle 可選：${ANGLES.join('、')}；鏡頭焦段 lens 可選：${LENSES.join('、')}；動態速度 motion 可選：${MOTIONS.join('、')}。
+時長 duration 只能從 ${durRule()} 選（${plat().zh} 單段上限 ${plat().max} 秒），台詞總長要能在該秒數內說完。${isMV()?'這是 MV：歌詞行（who 為主唱、tone 為歌詞）保留在 dialogue；字卡文字放 screenText。':''}
+設定卡：
+${bibleBrief()}
+原本內容（JSON）：
+${JSON.stringify(stripShot(sh))}
+只輸出修改後的同格式 JSON 物件，不要任何說明。`,
+fix:(sh,k,ex,note)=>{const P=PLAT[k]||plat();return `你是熟悉 Google ${P.zh} 影片生成的 AI 短劇導演。下面這一鏡在 ${P.zh} 無法生成影片（可能被安全過濾擋下，或模型無法理解）。請改寫這一鏡，保留劇情意圖與情緒張力，但排除常見的失敗原因：
+1. 暴力與傷害：不要出現流血、傷口、屍體、武器對準人或攻擊當下的畫面；改用人物反應、剪影、陰影、聲音暗示、事後的物件特寫來表現。
+2. 敏感主體：避免未成年人身處危險、真實名人、品牌商標、可辨識的政治人物或旗幟特寫。
+3. 人物太多：同一畫面主要角色不超過 2 人，其他人放遠景或虛化。
+4. 動作太複雜：一鏡只保留一個主要動作、一種運鏡。
+${isMV()?'5. 畫面文字：screenText 是剪輯時後製的字卡，保留原文字；但 visualEn 不要要求畫面本身出現可閱讀的文字。':k==='omni'?'5. 畫面文字：Omni 能原生渲染畫面中的文字，劇情需要招牌、信件、標語、螢幕字時可以大膽保留，寫進 screenText 欄位；文字要短（10 字內為佳），不要用來顯示字幕或對白。':'5. 畫面文字：不要要求畫面出現可閱讀的文字、招牌或字幕；screenText 欄位請清空。'}
+6. 台詞長度：duration 只能從 ${durRule(P)} 選，總台詞要能在該秒數內說完（中文約每秒 3～4 字），太長就刪減。
+7. visualEn 用具體、正面的描述句，避免否定句、抽象形容與一次塞太多細節。
+${ex.length?`額外要求：${ex.join('、')}。\n`:''}${note?`使用者補充：${note}\n`:''}${sh.method==='frames'?'這一鏡使用首尾幀生成，請一併寫好 endZh／endEn（尾幀畫面）。\n':''}
+設定卡：
+${bibleBrief()}
+原本內容（JSON）：
+${JSON.stringify(stripShot(sh))}
+只輸出修改後的同格式 JSON 物件，另外加一個欄位 "fixNote"：用一兩句繁體中文說明這次改了什麼、為什麼。不要任何其他說明。`;},
+rewrite:(sh,ds)=>`你是影視分鏡導演。使用者手動修改了這一${S.project.target==='comic'?'格':'鏡'}的部分設定，請以使用者修改後的內容為準，重寫其餘欄位，讓整鏡前後一致。
+使用者的修改：
+${ds.map(d=>['visualZh','visualEn','lighting','sfx','dialogue','screenText'].includes(d.k)?`- ${d.l}\n  原本：${JSON.stringify(d.from)}\n  改成：${JSON.stringify(d.to)}`:`- ${d.t}`).join('\n')}
+規則：
+1. 使用者改過的欄位必須保留使用者的版本，不可改回。
+2. 依新的景別、運鏡、時長、轉譯手法重寫 visualZh（若使用者沒改）與 visualEn，visualEn 必須完整對應 visualZh。
+3. lighting 配合新的畫面與氛圍調整。
+4. duration 只能從 ${durRule()} 選；台詞總長要能在該秒數內說完。
+5. 攝影機角度、鏡頭焦段、動態速度若被使用者修改，visualEn 與 lighting 要配合新的拍法改寫（例如改成空拍就要描述俯瞰構圖、改成慢動作就要描述動作細節）。
+6. 轉譯手法的意義：情緒特寫＝臉部微表情特寫；關鍵物件＝物件特寫推動劇情；接觸碰撞＝人或物接觸瞬間；廣角全景＝交代環境；縮時＝時間流逝；關鍵模糊＝前景或背景虛化聚焦；替換物件＝用象徵物取代直接呈現。
+${sh.method==='frames'?'7. 這一鏡使用首尾幀生成，請一併寫好 endZh／endEn（尾幀畫面）。\n':''}設定卡：
+${bibleBrief()}
+目前內容（JSON，已含使用者的修改）：
+${JSON.stringify(stripShot(sh))}
+只輸出重寫後的同格式 JSON 物件，不要任何說明。`,
+audio:(ep,idx)=>`你是影視配樂與音效設計師。根據第 ${idx+1} ${unit()}的內容與分鏡，設計配樂與聲音。
+作品：《${S.project.title}》（${S.project.genre}）
+本${unit()}：${ep.title}；梗概：${ep.summary||''}
+分鏡：
+${(S.shots[ep.id]||[]).map((s,i)=>`${i+1}. ${s.visualZh}｜對白：${s.dialogue.map(d=>d.who+'：'+d.line).join('／')}｜音效：${s.sfx}`).join('\n')}
+${isMV()?`這是 MV，主歌曲《${S.mv.title||'未命名'}》另由 Suno 生成（風格：${S.mv.song.style||'未填'}）。suno 欄寫本段在「純音樂版」使用的英文提示詞（同調性與 BPM，無人聲）；音效不要蓋過歌聲，標明哪些鏡頭需要全曲靜音。\n`:''}規則：suno 是給 SUNO 的英文風格提示詞（曲風、樂器、BPM、情緒，200 字元內，純配樂無人聲）；cues 標出哪幾個鏡頭用什麼情緒段落；ambience 是整集環境底音；sfx 為每個鏡頭補強或修正音效（中文＋英文，英文可用於音效生成工具）。
+只輸出 JSON：
+{"bgm":{"mood":"中文情緒描述","suno":"","cues":[{"from":1,"to":4,"mood":""}]},"ambience":"","sfx":[{"shot":1,"zh":"","en":""}]}`
+};
+
+/* ========== 本地組裝：繪圖與影片提示詞 ========== */
+function stripShot(s){const {id,orig,status,fixNote,...r}=s;return r;}
+function normShot(s,base){s={...(base||{}),...s};return {id:s.id||uid(),page:+s.page||1,panel:+s.panel||1,panels:Math.min(4,Math.max(1,+s.panels||1)),beat:+s.beat||1,
+  size:SIZES.includes(s.size)?s.size:'中景',camera:CAMS.includes(s.camera)?s.camera:'固定',angle:ANGLES.includes(s.angle)?s.angle:shotDef().angle,lens:LENSES.includes(s.lens)?s.lens:shotDef().lens,motion:MOTIONS.includes(s.motion)?s.motion:shotDef().motion,duration:(+s.duration>=1&&+s.duration<=60)?Math.round(+s.duration):8,
+  scene:s.scene||'',chars:Array.isArray(s.chars)?s.chars.filter(Boolean):String(s.chars||'').split(/[、,，]/).filter(Boolean),
+  visualZh:s.visualZh||'',visualEn:s.visualEn||'',lighting:s.lighting||'',
+  dialogue:Array.isArray(s.dialogue)?s.dialogue.map(d=>({who:d.who||'',line:d.line||'',tone:d.tone||''})):[],
+  sfx:s.sfx||'',technique:TECHS.includes(s.technique)?s.technique:'',onomatopoeia:s.onomatopoeia||'',
+  method:METHOD[s.method]?s.method:'text',screenText:String(s.screenText||''),status:s.status||'',endZh:s.endZh||'',endEn:s.endEn||'',fixNote:s.fixNote||''};}
+function applyShot(ep,i,d,sh,extra){const x=d.shot||(Array.isArray(d.shots)?d.shots[0]:d);const n=normShot({...x,id:sh.id,method:sh.method,...(extra||{})},sh);n.fixNote=x.fixNote||'';n.orig=snap(n);S.shots[ep.id][i]=n;}
+const findC=n=>S.bible.characters.find(c=>c.name===n);
+const findS=n=>S.bible.scenes.find(c=>c.name===n);
+function imgPrompt(s){
+  const st=STYLE[S.project.style],comic=S.project.target==='comic';
+  const cs=s.chars.map(n=>{const c=findC(n);return c&&c.en?`${n}: ${c.en}`:n;});
+  const sc=findS(s.scene);
+  ensureShot(s);const en=[st.en,SIZE_EN[s.size],ANGLE_EN[s.angle],LENS_EN[s.lens],s.visualEn,cs.length?'characters — '+cs.join('; '):'',sc?`setting: ${sc.en||sc.name}`:(s.scene?`setting: ${s.scene}`:''),s.lighting,
+    comic?'leave clean space for speech bubbles':'',
+    'consistent character design, highly detailed'].filter(Boolean).join(', ');
+  const tool=S.project.imgTool;
+  const enFull=tool==='mj'?`${en} --ar ${S.project.aspect} --style raw`:tool==='sd'?`${en}, aspect ratio ${S.project.aspect}\nNegative prompt: blurry, deformed hands, extra fingers, inconsistent face, text, watermark, low quality`:`${en}, aspect ratio ${S.project.aspect}`;
+  const zh=[st.zh,s.size,s.visualZh,s.chars.length?'角色：'+s.chars.map(n=>{const c=findC(n);return c&&c.zh?`${n}（${c.zh}）`:n;}).join('；'):'',s.scene?`場景：${s.scene}${sc&&sc.zh?'（'+sc.zh+'）':''}`:'',s.lighting?`光影：${s.lighting}`:'',comic?'預留對白框位置':'',`畫面比例 ${S.project.aspect}`].filter(Boolean).join('，');
+  return {en:enFull,zh};
+}
+function toolSuffix(ar){const t=S.project.imgTool;return t==='mj'?` --ar ${ar} --style raw`:t==='sd'?`, aspect ratio ${ar}\nNegative prompt: blurry, deformed hands, extra fingers, inconsistent face, text, watermark, low quality`:`, aspect ratio ${ar}`;}
+function segs(s){const P=plat(),m=P.max,ls=s.dialogue.filter(d=>d.line);
+  if(s.duration<=m)return [{d:s.duration,lines:ls,part:''}];
+  const rest=s.duration-m,d2=P.durs.find(x=>x>=rest)||m,half=Math.ceil(ls.length/2);
+  return [{d:m,lines:ls.slice(0,half),part:'A'},{d:d2,lines:ls.slice(half),part:'B'}];}
+function vidPrompt(s,g){
+  g=g||segs(s)[0];
+  const st=STYLE[S.project.style],sc=findS(s.scene),ing=s.method==='ingredients',fr=s.method==='frames';
+  const cs=s.chars.map(n=>{const c=findC(n);return ing?`${n} (from reference image)`:(c&&c.en?`${n} (${c.en})`:n);});
+  const pre=[g.part==='B'?'Continue seamlessly from the previous clip: same characters, wardrobe, lighting and camera position (use Extend).':'',
+    ing?'Use the uploaded reference images to keep the characters and setting consistent.':'',fr?'Animate smoothly from the provided start frame to the end frame.':''].filter(Boolean).join(' ');
+  ensureShot(s);const omniText=S.project.platform==='omni'&&String(s.screenText||'').trim();
+  const mv=isMV(),spoken=mv?g.lines.filter(d=>!isLyric(d)):g.lines;
+  const en=[`[${g.d}s | ${SIZE_EN[s.size]} | ${CAM_EN[s.camera]} | ${ANGLE_EN[s.angle]} | ${LENS_EN[s.lens]} | ${MOTION_EN[s.motion]}]`,pre,
+    s.scene?`Scene: ${(ing?s.scene+' (from reference image)':(sc&&sc.en?sc.en:s.scene)).replace(/[.。]\s*$/,'')}.`:'',cs.length?`Characters: ${cs.join('; ')}.`:'',
+    `Action: ${s.visualEn||s.visualZh}`,fr&&s.endEn?`Ending: ${s.endEn}`:'',s.lighting?`Lighting & mood: ${s.lighting}.`:'',
+    spoken.length?'Characters are speaking, silent action, no on-screen text.':'No dialogue, silent action.',
+    mv?'Music video shot: the song plays over this moment; nobody lip-syncs the lyrics.':'',
+    omniText?`Text rendering: "${omniText}"`:'',
+    `Style: ${mv?'music video, ':''}${st.en}, aspect ratio ${S.project.aspect}, no subtitles${omniText?'':', no on-screen text'}, consistent character appearance.`].filter(Boolean).join('\n');
+  const zh=[`【${g.d}秒｜${s.size}｜${s.camera}｜${s.angle}｜${LENS_ZH[s.lens]}｜${s.motion}${g.part?'｜段'+g.part:''}】`,g.part==='B'?'延續上一段（用延伸功能接上）。':'',ing?'使用上傳的參考圖保持角色與場景一致。':'',fr?'從首幀平順過渡到尾幀。':'',
+    s.scene?`場景：${s.scene}`:'',s.chars.length?`角色：${s.chars.join('、')}`:'',`畫面：${s.visualZh}`,fr&&s.endZh?`結尾：${s.endZh}`:'',s.lighting?`光影：${s.lighting}`:'',
+    spoken.length?'人物說話中（對白另見音軌），無字幕。':'無對白。',mv?'MV 畫面：歌曲在此播放，人物不對嘴。':'',omniText?`畫面文字：「${omniText}」`:'',`風格：${mv?'音樂 MV，':''}${st.zh}，比例 ${S.project.aspect}，不要字幕`].filter(Boolean).join('\n');
+  return {en,zh};
+}
+function audioPrompt(s,g){
+  g=g||segs(s)[0];const ep=curEp(),amb=ep&&S.audio[ep.id]&&S.audio[ep.id].ambience;
+  const mv=isMV(),sung=mv?g.lines.filter(isLyric):[];g={...g,lines:mv?g.lines.filter(d=>!isLyric(d)):g.lines};
+  const en=[`[Audio track | ${g.d}s${g.part?' | part '+g.part:''}]`,
+    sung.length?'Song lyrics over this shot (from the Suno song track, do not voice them):\n'+sung.map(d=>`"${d.line}"`).join('\n'):'',
+    g.lines.length?'Dialogue (Mandarin Chinese, lip-sync to the speaking character):\n'+g.lines.map(d=>`${d.who}${d.tone?` (${d.tone})`:''}: "${d.line}"`).join('\n'):'Dialogue: none.',
+    `Sound effects: ${s.sfx||'none'}`,amb?`Ambience: ${amb}`:''].filter(Boolean).join('\n');
+  const zh=[`【音軌｜${g.d}秒${g.part?'｜段'+g.part:''}】`,sung.length?'歌詞（使用 Suno 歌曲，不另配音）：\n'+sung.map(d=>`♪ ${d.line}`).join('\n'):'',
+    g.lines.length?'對白：\n'+g.lines.map(d=>`${d.who}${d.tone?`（${d.tone}）`:''}：「${d.line}」`).join('\n'):'對白：無',
+    `音效：${s.sfx||'無'}`,amb?`環境音：${amb}`:''].filter(Boolean).join('\n');
+  return {en,zh};
+}
+function refPrompts(s){const st=STYLE[S.project.style],out=[];
+  s.chars.forEach(n=>{const c=findC(n);out.push({type:'角色',name:n,prompt:`character reference sheet, ${c&&c.en?c.en:n}, front view, full body, neutral grey background, even soft studio lighting, ${st.en}${toolSuffix('3:4')}`});});
+  const sc=findS(s.scene);if(s.scene)out.push({type:'場景',name:s.scene,prompt:`${sc&&sc.en?sc.en:s.scene}, establishing shot, no people, ${st.en}${toolSuffix(S.project.aspect)}`});
+  return out;}
+function endPrompt(s){if(!s.endEn&&!s.endZh)return {en:'（尚未填寫尾幀畫面：請在分鏡卡填寫，或按「依我的修改重寫」讓 AI 補上）',zh:''};
+  return imgPrompt({...s,visualEn:s.endEn||s.visualEn,visualZh:s.endZh||s.visualZh});}
+function outputs(s,i){ensureShot(s);const out=[];
+  if(S.project.target==='comic'){const im=imgPrompt(s);out.push({id:`o${i}img`,label:'繪圖提示詞',text:im.en,zh:im.zh});return out;}
+  if(s.method==='ingredients')refPrompts(s).forEach((r,k)=>out.push({id:`o${i}r${k}`,label:`素材圖・${r.type}「${r.name}」（先生成，再上傳到 ${plat().zh}）`,text:r.prompt}));
+  if(s.method==='frames'){const im=imgPrompt(s),e=endPrompt(s);out.push({id:`o${i}fs`,label:'首幀圖提示詞',text:im.en,zh:im.zh});out.push({id:`o${i}fe`,label:'尾幀圖提示詞',text:e.en,zh:e.zh});}
+  segs(s).forEach(g=>{const v=vidPrompt(s,g);out.push({id:`o${i}v${g.part}`,label:`影片提示詞${g.part?`・段${g.part}（${g.d} 秒${g.part==='B'?'，用延伸功能接在段A後面':''}）`:`（${g.d} 秒）`}`,text:v.en,zh:v.zh,main:true});
+    const a=audioPrompt(s,g);out.push({id:`o${i}a${g.part}`,label:`獨立音軌與對白${g.part?`・段${g.part}（${g.d} 秒）`:`（${g.d} 秒）`}`,text:a.en,zh:a.zh,audio:true});});
+  return out;}
+function fixPanel(s,i){const comic=S.project.target==='comic';const ks=[S.project.platform||'vids',...Object.keys(PLAT).filter(k=>k!==(S.project.platform||'vids'))];
+  return `<div class="fixbox">${comic?'':`<div class="fixrow"><span>無法出圖？一鍵重製：</span>${ks.map((k,n)=>`<button class="btn sm ${n===0?'gold':''}" data-act="fix" data-k="${k}" data-i="${i}">${PLAT[k].zh} 無法出圖</button>`).join('')}</div>
+  <div class="ckrow">${FIXOPTS.map(o=>`<label class="ck"><input type="checkbox" data-fx="${i}" value="${o}">${o}</label>`).join('')}</div>`}
+  <div class="revise" style="border:0;padding:0;margin:0"><input id="rv-${i}" placeholder="${comic?'修改意見，例如：改成雨夜特寫':'補充說明或其他修改意見（可留空）'}"><button class="btn sm" data-act="revise" data-i="${i}">AI 修改這一${comic?'格':'鏡'}</button></div>
+  ${s.fixNote?`<p class="fixnote">上次修改：${esc(s.fixNote)}</p>`:''}</div>`;}
+const shotLabel=(s,i)=>S.project.target==='comic'?`第${s.page}頁・第${s.panel}格`:`鏡 ${String(i+1).padStart(2,'0')}`;
+function sortShots(arr){if(S.project.target==='comic')arr.sort((a,b)=>a.page-b.page||a.panel-b.panel);return arr;}
+
+/* ========== 畫面 ========== */
+function renderTop(){
+  $('#ttl').innerHTML=`${esc(CUR.id?S.project.title:'作品書架')}<span>小說影視化工坊・雲端版</span>`;
+  document.title=`${CUR.id?S.project.title+'｜':''}小說影視化工坊`;
+  $('#engSel').innerHTML=opts2(ENGINES,S.ui.engine);
+}
+function renderNav(){$('#rail').innerHTML=`<button class="${S.ui.view==='projects'?'on':''}" data-act="go" data-v="projects"><i>書</i>作品書架</button>`+
+  (CUR.id?views().map(([k,l],i)=>`<button class="${S.ui.view===k?'on':''}" data-act="go" data-v="${k}"><i>${String(i+1).padStart(2,'0')}</i>${l}</button>`).join(''):'')+
+  `<p class="railnote">每次修改會自動存到你的 Google 雲端硬碟；手機、平板、電腦開同一個網址就能接著做。</p>`;}
+function render(){if(!CUR.id&&S.ui.view!=='projects')S.ui.view='projects';if(S.ui.view==='mv'&&!isMV())S.ui.view='import';renderNav();$('#view').innerHTML=(R[S.ui.view]||R.projects)();}
+function epPicker(){
+  if(!S.episodes.length)return '';
+  if(!S.episodes.find(e=>e.id===S.ui.ep))S.ui.ep=S.episodes[0].id;
+  return `<div class="eps">${S.episodes.map((e,i)=>`<button class="chip ${e.id===S.ui.ep?'on':''}" data-act="pickEp" data-id="${e.id}">第${i+1}${unit()}　${esc(e.title)}</button>`).join('')}</div>`;
+}
+const curEp=()=>{let e=S.episodes.find(x=>x.id===S.ui.ep);if(!e&&S.episodes.length){e=S.episodes[0];S.ui.ep=e.id;}return e;};
+const noEp=()=>`<div class="empty">還沒有${isMV()?'段落':unit()+'數'}。先到「${viewName('breakdown')}」讓 AI 拆好，或手動新增一${unit()}。<br><button class="btn gold" data-act="go" data-v="breakdown">前往${viewName('breakdown')}</button></div>`;
+
+const R={};
+R.projects=()=>`<h2>作品書架</h2><p class="hint">每部作品在雲端硬碟「小說影視化工坊／作品資料」裡各存成一個檔案。</p>
+<div class="toolbar"><label>新作品名稱<input id="newTitle" placeholder="例如：雙華記 第一卷"></label><button class="btn gold" data-act="newProj">建立作品</button><button class="btn" data-act="impJSON">匯入舊版 JSON 備份</button><button class="btn" data-act="refreshList">重新整理</button>${ROOTURL?`<a class="btn" href="${esc(ROOTURL)}" target="_blank" rel="noopener">開啟雲端資料夾</a>`:''}</div>
+${PROJECTS.length?`<div class="cards">${PROJECTS.map(p=>`<div class="card pcard"><h3>${esc(p.title)}</h3><p class="meta" style="margin:0">最後修改 ${fmtDate(p.updated)}</p><div class="row">${p.id===CUR.id?'<span class="tech" style="font-size:12px;border:1px solid var(--gold);color:var(--gold);border-radius:999px;padding:1px 9px">目前開啟中</span>':`<button class="btn gold sm" data-act="openProj" data-id="${p.id}">開啟</button>`}<button class="btn sm del" data-act="delProj" data-id="${p.id}">移到垃圾桶</button></div></div>`).join('')}</div>`:`<div class="empty">${esc(LISTSTATE)}</div>`}`;
+R.import=()=>{const P=S.project;return `
+<section class="sec"><h2>專案設定</h2><p class="hint">這些設定會套進每一段繪圖與影片提示詞。</p>
+<div class="grid3">
+<label>作品名稱<input data-b="project.title" value="${esc(P.title)}"></label>
+<label>題材<select data-b="project.genre">${opts(GENRES,P.genre)}</select></label>
+<label>產出類型<select data-b="project.target" data-rr>${opts2([['drama','AI 短劇'],['comic','漫畫（每頁 1～4 格）'],['mv','MV 音樂錄影帶（行銷 MV）']],P.target)}</select></label>
+<label>畫風<select data-b="project.style">${opts2(Object.entries(STYLE).map(([k,v])=>[k,v.zh]),P.style)}</select></label>
+<label>畫面比例<select data-b="project.aspect">${opts(['9:16','16:9','3:4','4:3','1:1'],P.aspect)}</select></label>
+<label>出片平台<select data-b="project.platform" data-rr>${opts2(Object.entries(PLAT).map(([k,v])=>[k,v.zh+'（單段 '+v.max+' 秒）']),P.platform||'vids')}</select></label>
+<label>繪圖工具<select data-b="project.imgTool">${opts2([['mj','Midjourney'],['flux','Flux／Google Flow'],['sd','Stable Diffusion／ComfyUI']],P.imgTool)}</select></label>
+</div></section>
+<section class="sec"><h2>小說原文</h2>
+<p class="hint">貼上章節文字，或上傳 txt／md；也能匯入小說寫作平台的 JSON 備份，章節與人物會一起帶進來。一次交給 AI 約 15,000 字，長篇請一章一章拆，拆解時選「接在現有${unit()}數後面」。</p>
+<div class="row"><label class="btn">上傳 txt／md<input type="file" accept=".txt,.md,.markdown,text/plain" data-file="text" hidden></label><label class="btn">匯入寫作平台 JSON<input type="file" accept=".json,application/json" data-file="wp" hidden></label><button class="btn del" data-act="clearSrc">清空原文</button></div>
+<textarea class="src" data-b="source.text" placeholder="把小說章節貼在這裡…">${esc(S.source.text)}</textarea>
+<div class="meta"><span id="cnt">${(S.source.text||'').length.toLocaleString()}</span> 字</div>
+${isMV()?`<p class="cardtxt">MV 模式：下一步先到「MV 企劃」產生情緒曲線、歌曲與歌詞，再到「段落拆解」把歌曲切段、做分鏡。</p><button class="btn gold" data-act="go" data-v="mv">下一步：MV 企劃</button>`:`<button class="btn gold" data-act="go" data-v="breakdown">下一步：劇情拆解</button>`}</section>`;};
+
+R.breakdown=()=>{const mv=isMV();return `
+<section class="sec"><h2>${viewName('breakdown')}</h2><p class="hint">${mv?'依「MV 企劃」的情緒曲線與歌詞，把歌曲切成段落（前奏、主歌、副歌、橋段…，每段＝一個段落卡），每段列出要拍的畫面事件、淚點與彩蛋。標題建議寫上起訖時間，例如「前奏（0:00–0:35）」。':`把原文拆成${unit()}數與劇情點，每點標出起承轉合與勾子強度。拆完可以自己改，改好再進設定卡與分鏡。`}</p>
+<div class="toolbar">
+<label>${mv?'段落數':unit()+'數'}<input type="number" id="bkN" min="1" max="30" value="${mv?(S.mv.curve.length||8):5}"></label>
+<label>每${unit()}${mv?'畫面事件':'劇情點'}<input type="number" id="bkB" min="2" max="12" value="${mv?4:6}"></label>
+<label>套用方式<select id="bkMode"><option value="replace">取代現有${unit()}數</option><option value="append">接在現有${unit()}數後面</option></select></label>
+<button class="btn gold" data-act="aiBreakdown">AI 拆解</button><button class="btn" data-act="addEp">手動新增一${unit()}</button></div>
+${S.episodes.length?S.episodes.map((e,ei)=>`<article class="ep"><header><span class="no">第${ei+1}${unit()}</span><input data-b="episodes.${ei}.title" value="${esc(e.title)}" aria-label="標題"><button class="btn sm del" data-act="delEp" data-i="${ei}">刪除</button></header>
+<div class="grid2"><label>梗概<textarea data-b="episodes.${ei}.summary">${esc(e.summary)}</textarea></label><label>${mv?'淚點／彩蛋':unit()+'尾勾子'}<textarea data-b="episodes.${ei}.hook">${esc(e.hook)}</textarea></label></div>
+<ol class="beats">${e.beats.map((b,bi)=>`<li><select data-b="episodes.${ei}.beats.${bi}.stage" aria-label="起承轉合">${opts(STAGES,b.stage)}</select><textarea data-b="episodes.${ei}.beats.${bi}.text" aria-label="劇情點">${esc(b.text)}</textarea><input type="number" min="1" max="5" data-b="episodes.${ei}.beats.${bi}.hook" value="${b.hook}" title="勾子強度 1～5" aria-label="勾子強度"><button class="btn sm del" data-act="delBeat" data-i="${ei}" data-j="${bi}" aria-label="刪除">×</button></li>`).join('')}</ol>
+<button class="btn sm" data-act="addBeat" data-i="${ei}">＋ 新增劇情點</button></article>`).join('')+`<button class="btn gold" data-act="go" data-v="bible">下一步：設定卡</button>`
+:`<div class="empty">${mv?'先在「MV 企劃」完成情緒曲線與歌詞，再按「AI 拆解」切出段落。':`原文貼好後，按「AI 拆解」就會產生${unit()}數與劇情點。`}</div>`}</section>`;};
+
+function cardHTML(type,c,i){const isC=type==='characters';return `<div class="card"><div class="cardhead"><input data-b="bible.${type}.${i}.name" value="${esc(c.name)}" placeholder="名稱" aria-label="名稱">${isC?`<input data-b="bible.${type}.${i}.role" value="${esc(c.role)}" placeholder="定位" style="width:110px" aria-label="定位">`:''}<button class="btn sm del" data-act="delCard" data-t="${type}" data-i="${i}" aria-label="刪除">×</button></div>
+<label>中文設定<textarea data-b="bible.${type}.${i}.zh">${esc(c.zh)}</textarea></label>
+<label><span class="lock">英文一致性鎖定詞（自動帶入每段提示詞）</span><textarea data-b="bible.${type}.${i}.en">${esc(c.en)}</textarea></label>
+${isC?`<label>聲線設定<input data-b="bible.${type}.${i}.voice" value="${esc(c.voice)}"></label>`:''}</div>`;}
+R.bible=()=>{const b=S.bible;const grp=(t,l)=>`<div class="sec"><div class="row" style="justify-content:space-between"><h3>${l}（${b[t].length}）</h3><button class="btn sm" data-act="addCard" data-t="${t}">＋ 新增${l}</button></div><div class="cards">${b[t].map((c,i)=>cardHTML(t,c,i)).join('')||`<p class="hint">還沒有${l}。</p>`}</div></div>`;
+return `<section class="sec"><h2>設定卡</h2><p class="hint">角色、場景、道具各一張卡。英文鎖定詞會自動塞進所有繪圖與影片提示詞，讓同一個角色跨鏡頭長得一樣。</p>
+<div class="toolbar"><button class="btn gold" data-act="aiBible">AI 從原文建立設定卡</button><span class="hint" style="margin:0">已存在的卡片會保留，只補上空白欄位與新名稱。</span></div>
+${grp('characters','角色')}${grp('scenes','場景')}${grp('props','道具')}
+<button class="btn gold" data-act="go" data-v="board">下一步：分鏡</button></section>`;};
+
+function durOpts(v){const P=plat();const ds=[...P.durs];if(!ds.includes(v))ds.push(v);return ds.map(d=>`<option value="${d}" ${d==v?'selected':''}>${d} 秒${d>P.max?'（超過上限，會拆成兩段）':''}</option>`).join('');}
+function shotCard(s,i,ep,T){ensureShot(s);const comic=S.project.target==='comic',mv=isMV();const base=`shots.${ep.id}.${i}`;
+const scs=[...new Set([...S.bible.scenes.map(x=>x.name),s.scene].filter(Boolean))];
+return `<article class="shot" id="shot-${i}"><header><span class="no">${shotLabel(s,i)}</span>${mv?`<span class="tc">${tcOf(s,T)}</span>`:''}${s.technique?`<span class="tech">${esc(s.technique)}</span>`:''}${!comic&&s.status?`<span class="badge ${s.status}">${STATUS_ZH[s.status]}</span>`:''}<span class="sp"></span><button class="btn sm" data-act="dupShot" data-i="${i}">複製</button><button class="btn sm del" data-act="delShot" data-i="${i}">刪除</button></header>
+<div class="diff" id="df-${i}">${diffInner(s,i)}</div>
+<div class="grid4">
+<label>景別<select data-b="${base}.size" data-rr>${opts(SIZES,s.size)}</select></label>
+<label>運鏡<select data-b="${base}.camera" data-rr>${opts(CAMS,s.camera)}</select></label>
+${comic?`<label>頁／格<span style="display:flex;gap:4px"><input type="number" min="1" data-b="${base}.page" value="${s.page}" aria-label="頁"><input type="number" min="1" max="4" data-b="${base}.panel" value="${s.panel}" aria-label="格"></span></label>`:mv?`<label>時長（秒）<input type="number" min="1" max="60" data-b="${base}.duration" data-num data-rr value="${s.duration}"></label>`:`<label>時長<select data-b="${base}.duration" data-num data-rr>${durOpts(s.duration)}</select></label>`}
+<label>轉譯手法<select data-b="${base}.technique" data-rr>${opts2(TECHS.map(t=>[t,t||'（無）']),s.technique)}</select></label></div>
+<div class="grid3"><label>攝影機角度<select data-b="${base}.angle" data-rr>${opts2(ANGLES.map(a=>[a,a+'（'+ANGLE_EN[a].replace(' angle','').replace(' shot','')+'）']),s.angle)}</select></label>
+<label>鏡頭焦段<select data-b="${base}.lens" data-rr>${opts2(LENSES.map(a=>[a,LENS_ZH[a]]),s.lens)}</select></label>
+${comic?'<span></span>':`<label>動態速度<select data-b="${base}.motion" data-rr>${opts2(MOTIONS.map(a=>[a,a+'（'+MOTION_EN[a]+'）']),s.motion)}</select></label>`}</div>
+<div class="grid3"><label>場景<select data-b="${base}.scene" data-rr><option value="">（未指定）</option>${opts(scs,s.scene)}</select></label>
+<label>出場角色（用頓號分隔）<input data-b="${base}.chars" data-list value="${esc(s.chars.join('、'))}"></label>
+${comic?'<span></span>':`<label>生成方式<select data-b="${base}.method" data-rr>${opts2(Object.entries(METHOD),s.method)}</select></label>`}</div>
+<label>畫面描述（中）<textarea data-b="${base}.visualZh">${esc(s.visualZh)}</textarea></label>
+<label>畫面描述（英）<textarea data-b="${base}.visualEn">${esc(s.visualEn)}</textarea></label>
+${!comic&&s.method==='frames'?`<div class="grid2"><label>尾幀畫面（中）<textarea data-b="${base}.endZh">${esc(s.endZh)}</textarea></label><label>尾幀畫面（英）<textarea data-b="${base}.endEn">${esc(s.endEn)}</textarea></label></div>`:''}
+${comic?'':mv?`<label>畫面文字／字卡${S.project.platform==='omni'?'<span class="cc">Omni 會直接渲染進畫面</span>':'<span class="cc">列入字卡清單，剪輯時後製</span>'}<input data-b="${base}.screenText" value="${esc(s.screenText)}" placeholder="例如：【第四十七趟　乘客：陳語彤】、片尾問句"></label>`:`<label>畫面指定文字（限 Omni）${S.project.platform==='omni'?'':'<span class="cc">目前出片平台不是 Omni，這欄不會寫進提示詞</span>'}<input data-b="${base}.screenText" value="${esc(s.screenText)}" placeholder="例如：沈氏宗祠、密電一封、民國二十六年"></label>`}
+<div class="grid2"><label>光影氛圍（英）<input data-b="${base}.lighting" value="${esc(s.lighting)}"></label>
+<label>音效${comic?'／狀聲詞':''}<span style="display:flex;gap:6px"><input data-b="${base}.sfx" value="${esc(s.sfx)}" aria-label="音效">${comic?`<input data-b="${base}.onomatopoeia" value="${esc(s.onomatopoeia)}" placeholder="砰！" aria-label="狀聲詞" style="width:90px">`:''}</span></label></div>
+<div><div class="row" style="margin:0 0 6px;justify-content:space-between"><span style="font-size:13px;color:var(--mute)">${mv?'歌詞／對白（歌詞行的角色寫「主唱（女聲）」，不會做對嘴）':'對白'}</span><button class="btn sm" data-act="addLine" data-i="${i}">＋ 新增一句</button></div>
+<div class="lines">${s.dialogue.map((d,j)=>`<div class="line"><input data-b="${base}.dialogue.${j}.who" value="${esc(d.who)}" placeholder="角色" aria-label="角色"><input data-b="${base}.dialogue.${j}.line" value="${esc(d.line)}" placeholder="台詞" aria-label="台詞"><input data-b="${base}.dialogue.${j}.tone" value="${esc(d.tone)}" placeholder="語氣" aria-label="語氣"><button class="btn sm del" data-act="delLine" data-i="${i}" data-j="${j}" aria-label="刪除">×</button></div>`).join('')}</div></div>
+${fixPanel(s,i)}</article>`;}
+R.board=()=>{if(!S.episodes.length)return `<h2>分鏡</h2>${noEp()}`;
+const ep=curEp(),idx=S.episodes.indexOf(ep),comic=S.project.target==='comic',mv=isMV();
+const shots=sortShots(S.shots[ep.id]||[]);S.shots[ep.id]=shots;shots.forEach(ensureShot);const T=mv?mvTimes():null;
+let body='';
+if(!shots.length)body=`<div class="empty">第${idx+1}${unit()}還沒有分鏡。按「AI 生成本${unit()}分鏡」，或手動新增。</div>`;
+else if(comic){const pages=[...new Set(shots.map(s=>s.page))];
+  body=pages.map(p=>{const ps=shots.map((s,i)=>({s,i})).filter(o=>o.s.page===p);const n=Math.min(4,Math.max(ps.length,1));
+  return `<div class="pagewrap"><div><p class="pgtitle">第 ${p} 頁・${ps.length} 格</p><div class="pg l${n}">${ps.slice(0,4).map(o=>`<a class="pn" href="#shot-${o.i}"><b>${o.s.panel}｜${o.s.size}</b>${esc(o.s.visualZh.slice(0,34))}${o.s.dialogue.length?`<br>💬${o.s.dialogue.length}`:''}</a>`).join('')}</div></div><div>${ps.map(o=>shotCard(o.s,o.i,ep)).join('')}</div></div>`;}).join('');}
+else{const tot=shots.reduce((a,s)=>a+s.duration,0);
+  body=`<div class="strip" aria-label="鏡頭總覽">${shots.map((s,i)=>`<a class="frame ${s.status||''}" href="#shot-${i}"><b>${String(i+1).padStart(2,'0')}${s.status==='ok'?' ✓':s.status==='fail'?' ✗':''}</b><em>${mv?tcOf(s,T):`${s.size}・${s.duration}s`}${s.duration>plat().max?' <i>拆2段</i>':''}</em>${esc(s.visualZh.slice(0,26))}</a>`).join('')}</div>
+  <p class="stripmeta">${mv?`本段 ${shots.length} 鏡，${fmtT(mvSegStart(idx))}–${fmtT(mvSegStart(idx)+tot)}（${tot} 秒）；全片 ${fmtT(T._total)}${S.mv.brief.sec?`，目標 ${fmtT(+S.mv.brief.sec)}`:''}`:`共 ${shots.length} 個鏡頭，總長約 ${Math.floor(tot/60)} 分 ${tot%60} 秒`}</p>${shots.map((s,i)=>shotCard(s,i,ep,T)).join('')}`;}
+return `<h2>分鏡</h2><p class="hint">${comic?'漫畫模式：每頁 1～4 格，左邊是頁面版型預覽，點格子跳到該格設定。':mv?`MV 模式：膠卷上顯示每鏡的時間碼（依段落順序與時長自動累計）。歌詞寫在「歌詞／對白」並把角色標成「主唱（女聲）」，字卡寫在「畫面文字／字卡」。出片平台 ${plat().zh}，單段上限 ${plat().max} 秒，超過會自動拆兩段。`:`短劇模式：出片平台 ${plat().zh}，每鏡最長 ${plat().max} 秒。上方膠卷是整集鏡頭總覽，點一格跳到該鏡；改了鏡頭設定，卡片上方會列出修改處，可一鍵產生重寫指令。`}產出類型可在「匯入小說」切換。</p>
+${epPicker()}<div class="toolbar"><button class="btn gold" data-act="aiBoard">AI 生成本${unit()}分鏡</button><button class="btn" data-act="addShot">＋ 新增${comic?'一格':'鏡頭'}</button>${shots.length?`<button class="btn" data-act="go" data-v="prompts">看提示詞</button>${comic?'':'<button class="btn" data-act="go" data-v="shoot">進入出片模式</button>'}`:''}</div>${body}`;};
+
+function pbox(id,label,text){return `<div class="pbox"><div class="lbl"><span>${label}<span class="cc">${String(text).length} 字元</span></span><button class="btn sm" data-act="copyEl" data-t="${id}">複製</button></div><pre id="${id}">${esc(text)}</pre></div>`;}
+R.prompts=()=>{if(!S.episodes.length)return `<h2>提示詞</h2>${noEp()}`;
+const ep=curEp(),shots=sortShots(S.shots[ep.id]||[]),comic=S.project.target==='comic';
+return `<h2>提示詞</h2><p class="hint">${comic?'依分鏡與設定卡即時組裝的繪圖提示詞。':`依分鏡、設定卡與出片平台（${plat().zh}）即時組裝。每鏡依「生成方式」給不同組合：文字生影片給一段；素材生影片先給參考圖提示詞；首尾幀給首幀、尾幀與動作。超過 ${plat().max} 秒的鏡頭會自動拆成段A、段B。`}</p>${epPicker()}
+${shots.length?`<div class="toolbar"><button class="btn gold" data-act="copyAll" data-k="img">複製本${unit()}全部繪圖提示詞</button>${comic?'':`<button class="btn gold" data-act="copyAll" data-k="vid">複製本${unit()}全部影片提示詞</button><button class="btn gold" data-act="copyAll" data-k="aud">複製本${unit()}全部音軌與對白</button><button class="btn" data-act="go" data-v="shoot">進入出片模式</button>`}</div>`+
+shots.map((s,i)=>{const os=outputs(s,i);return `<div class="pr"><h3>${shotLabel(s,i)}${isMV()?`　<span class="tc">${tcOf(s)}</span>`:''}　${s.size}・${s.camera}${s.technique?'・'+s.technique:''}${comic?'':'・'+METHOD[s.method]}</h3>
+${os.map(o=>pbox(o.id,esc(o.label),o.text)).join('')}
+${os.some(o=>o.zh)?`<details><summary>中文版</summary>${os.filter(o=>o.zh).map(o=>pbox(o.id+'z',esc(o.label)+'（中）',o.zh)).join('')}</details>`:''}</div>`;}).join('')
+:`<div class="empty">這一${unit()}還沒有分鏡。<br><button class="btn gold" data-act="go" data-v="board">前往分鏡</button></div>`}`;};
+
+R.shoot=()=>{if(!S.episodes.length)return `<h2>出片模式</h2>${noEp()}`;
+const ep=curEp(),shots=sortShots(S.shots[ep.id]||[]),comic=S.project.target==='comic';shots.forEach(ensureShot);
+if(!shots.length)return `<h2>出片模式</h2>${epPicker()}<div class="empty">這一${unit()}還沒有分鏡。<br><button class="btn gold" data-act="go" data-v="board">前往分鏡</button></div>`;
+const k=Math.min(Math.max(0,+S.ui.shot||0),shots.length-1);S.ui.shot=k;const s=shots[k];
+const ok=shots.filter(x=>x.status==='ok').length,fail=shots.filter(x=>x.status==='fail').length;
+return `<h2>出片模式</h2><p class="hint">一次一${comic?'格':'鏡'}，照編號順序複製、貼到 ${comic?'繪圖工具':plat().zh}。完成後標記成功或失敗；標記失敗會直接出現一鍵重製。</p>${epPicker()}
+<div class="prog"><div style="width:${Math.round(ok/shots.length*100)}%"></div></div><p class="meta" style="margin:0">成功 ${ok}／${shots.length}${fail?`，失敗 ${fail}`:''}</p>
+<div class="dots">${shots.map((x,j)=>`<button class="dot ${x.status} ${j===k?'on':''}" data-act="shotGo" data-k="${j}" aria-label="第${j+1}${comic?'格':'鏡'}">${j+1}</button>`).join('')}</div>
+<article class="shootcard" id="shootcard"><header><span class="no">${shotLabel(s,k)}</span>${isMV()?`<span class="tc">${tcOf(s)}</span>`:''}<span class="meta" style="margin:0">${s.size}・${s.camera}${comic?'':`・${s.duration} 秒・${METHOD[s.method]}`}</span>${s.status?`<span class="badge ${s.status}">${STATUS_ZH[s.status]}</span>`:''}</header>
+<p class="shootdesc">${esc(s.visualZh)}</p>${isMV()&&s.screenText?`<p class="cardtxt">字卡（後製）：${esc(s.screenText)}</p>`:''}
+${outputs(s,k).map((o,n)=>`<div class="sblock"><div class="lbl"><span>${n+1}. ${esc(o.label)}<span class="cc">${o.text.length} 字元</span></span><button class="btn gold big" data-act="copyEl" data-t="${o.id}">複製</button></div><pre id="${o.id}">${esc(o.text)}</pre></div>`).join('')}
+<div class="row"><button class="btn okb ${s.status==='ok'?'on':''}" data-act="setStatus" data-v="ok" data-i="${k}">✓ 成功</button><button class="btn warn ${s.status==='fail'?'on':''}" data-act="setStatus" data-v="fail" data-i="${k}">✗ 失敗</button>${s.status?`<button class="btn" data-act="setStatus" data-v="" data-i="${k}">清除標記</button>`:''}</div>
+${s.status==='fail'?fixPanel(s,k):''}
+<div class="row" style="justify-content:space-between;margin-top:16px"><button class="btn" data-act="shotGo" data-k="${k-1}" ${k?'':'disabled'}>← 上一${comic?'格':'鏡'}</button><button class="btn gold" data-act="shotGo" data-k="${k+1}" ${k<shots.length-1?'':'disabled'}>下一${comic?'格':'鏡'} →</button></div></article>`;};
+
+R.audio=()=>{if(!S.episodes.length)return `<h2>對白與聲音</h2>${noEp()}`;
+const ep=curEp(),idx=S.episodes.indexOf(ep),shots=sortShots(S.shots[ep.id]||[]),a=S.audio[ep.id],mv=isMV(),T=mv?mvTimes():null;
+const script=shots.map((s,i)=>s.dialogue.filter(d=>d.line).map(d=>mv?`${tcOf(s,T)}｜${shotLabel(s,i)}｜${isLyric(d)?'♪ '+d.line:`${d.who}${d.tone?`（${d.tone}）`:''}：${d.line}`}`:`${shotLabel(s,i)}｜${d.who}${d.tone?`（${d.tone}）`:''}：${d.line}`).join('\n')).filter(Boolean).join('\n');
+return `<h2>${viewName('audio')}</h2><p class="hint">${mv?'MV 主歌曲（Suno 風格與歌詞）、本段歌詞對位與台詞、逐鏡音效，以及本段純音樂版提示詞。標 ♪ 的是歌詞，不做配音。':`角色聲線、整${unit()}對白腳本、逐鏡音效，以及給 SUNO 的配樂提示詞。`}</p>${epPicker()}
+${mv?`<section class="sec mvsec"><div class="row" style="justify-content:space-between;margin-top:0"><h3>主歌曲《${esc(S.mv.title||'未命名')}》</h3><button class="btn sm" data-act="go" data-v="mv">到 MV 企劃編輯</button></div>
+${S.mv.song.style||S.mv.lyrics?`${pbox('mvStyleA','Suno・Style of Music',S.mv.song.style)}${S.mv.song.exclude?pbox('mvExA','Suno・Exclude Styles',S.mv.song.exclude):''}${pbox('mvLyrA','Suno・Lyrics（歌詞）',S.mv.lyrics)}`:'<p class="hint">還沒有歌曲設定。先到「MV 企劃」產生歌曲與歌詞。</p>'}</section>`:''}
+<section class="sec"><h3 style="margin-bottom:10px">角色聲線</h3>${S.bible.characters.length?`<div class="tblwrap"><table class="tbl"><tr><th>角色</th><th>定位</th><th>聲線設定</th></tr>${S.bible.characters.map((c,i)=>`<tr><td>${esc(c.name)}</td><td>${esc(c.role)}</td><td><input data-b="bible.characters.${i}.voice" value="${esc(c.voice)}" aria-label="聲線"></td></tr>`).join('')}</table></div>`:'<p class="hint">先在「設定卡」建立角色。</p>'}</section>
+<section class="sec"><div class="row" style="justify-content:space-between"><h3>${mv?'本段純音樂版與環境音':'配樂與環境音'}</h3><button class="btn gold" data-act="aiAudio" ${shots.length?'':'disabled'}>AI 設計本${unit()}${mv?'音樂與音效':'配樂與音效'}</button></div>
+${a?`${pbox('bgmSuno','SUNO 配樂提示詞',a.bgm?.suno||'')}<div class="grid2"><label>配樂情緒<input data-b="audio.${ep.id}.bgm.mood" value="${esc(a.bgm?.mood)}"></label><label>環境底音<input data-b="audio.${ep.id}.ambience" value="${esc(a.ambience)}"></label></div>
+${(a.bgm?.cues||[]).length?`<div class="tblwrap" style="margin-top:12px"><table class="tbl"><tr><th>鏡頭範圍</th><th>音樂段落情緒</th></tr>${a.bgm.cues.map(c=>`<tr><td>${c.from}～${c.to}</td><td>${esc(c.mood)}</td></tr>`).join('')}</table></div>`:''}`:`<p class="hint">分鏡完成後按上方按鈕，產生配樂方向、段落與環境音。</p>`}</section>
+<section class="sec"><div class="row" style="justify-content:space-between"><h3>${mv?'歌詞對位與台詞':'對白腳本'}</h3>${script?'<button class="btn sm" data-act="copyEl" data-t="scriptBox">複製腳本</button>':''}</div>${script?`<div class="pbox"><pre id="scriptBox">${esc(script)}</pre></div>`:'<p class="hint">分鏡裡還沒有對白。</p>'}</section>
+<section class="sec"><h3 style="margin-bottom:10px">逐鏡音效</h3>${shots.length?`<div class="tblwrap"><table class="tbl"><tr><th>鏡頭</th><th>音效（中）</th><th>英文（音效生成用）</th></tr>${shots.map((s,i)=>{const x=(a?.sfx||[]).find(f=>+f.shot===i+1);return `<tr><td style="white-space:nowrap">${shotLabel(s,i)}</td><td><input data-b="shots.${ep.id}.${i}.sfx" value="${esc(s.sfx)}" aria-label="音效"></td><td>${esc(x?.en||'')}</td></tr>`;}).join('')}</table></div>`:'<p class="hint">還沒有分鏡。</p>'}</section>`;};
+
+R.export=()=>`<h2>匯出</h2><p class="hint">作品本身已自動存在雲端。這裡的匯出檔會存到雲端硬碟「小說影視化工坊／匯出檔」資料夾，手機上也能直接開。</p>
+<div class="exgrid">${mvExportCards()}
+<div class="ex"><h3>JSON 完整備份</h3><p>整部作品的快照（含${isMV()||mvFilled()?'MV 企劃、':''}分鏡與設定卡），可匯入成另一部新作品。</p><button class="btn gold" data-act="expJSON">存到雲端</button></div>
+<div class="ex"><h3>分鏡素材表 CSV</h3><p>全部${unit()}數逐鏡清單＋提示詞，用 Google 試算表或 Excel 開，剪映對素材用。</p><button class="btn gold" data-act="expCSV">存到雲端</button></div>
+<div class="ex"><h3>完整分鏡腳本 TXT</h3><p>劇情點、分鏡、對白、音效、提示詞一份讀完。</p><button class="btn gold" data-act="expTXT">存到雲端</button></div>
+<div class="ex"><h3>換一部作品</h3><p>回到作品書架，開啟或建立其他作品。</p><button class="btn" data-act="go" data-v="projects">回作品書架</button></div>
+</div>`;
+
+/* ========== MV 企劃 ========== */
+/* 範例：《第四十七趟》行銷 MV《後座》企劃（董元創作室） */
+const MV_SAMPLE={"title": "後座", "length": "3 分 40 秒（16:9 橫式）", "genre": "電影感弦樂＋流行抒情", "visual": "日系電影感動畫 × 台灣在地場景", "curveSum": "平淡 → 裂縫 → 堆疊 → 高點 → 靜默 → 問句鉤子", "tagline": "他是司機…\n而她是他最後一程的乘客。", "concept": "這支 MV 是女兒寫給父親的歌。觀眾一開始只看到一個普通的夜班計程車司機，隨著歌曲推進，才慢慢發現他每載一趟就忘掉一件事，而第四十七位乘客是他的女兒。", "layers": [{"who": "路人", "see": "父親、遺忘、後座、一句「爸，你頭髮白好多」", "feel": "想起自己的爸媽，直接被打中"}, {"who": "讀者", "see": "一灘水、鯉魚胎記、母親的窗與筆記本、花田回頭、第四十六趟、鏡中蒼老、模糊的車資", "feel": "會心一擊，發現彩蛋"}], "spoilers": "- 不出現醫院、病床、點滴、消毒水等任何醫療線索，保住第 16 章的植物人反轉。\n- 跳表器上的「車資」一律被雨痕糊住，不寫出「父親身分」。\n- 片尾問句只拋問題、不給答案。", "curve": [{"time": "0:00–0:35", "part": "前奏", "emotion": "平淡", "music": "鋼琴單音＋引擎聲", "tone": "低飽和、固定鏡位"}, {"time": "0:35–1:10", "part": "主歌一", "emotion": "第一道裂縫", "music": "女聲氣音進入", "tone": "霓虹、冷藍"}, {"time": "1:10–1:40", "part": "副歌一", "emotion": "開始有重量", "music": "弦樂墊底", "tone": "城市縮時、暖色回憶"}, {"time": "1:40–2:05", "part": "主歌二", "emotion": "被擦掉的東西", "music": "大提琴＋刷鼓", "tone": "照片褪白、草莓"}, {"time": "2:05–2:25", "part": "橋段", "emotion": "緊繃", "music": "弦樂漸強→驟停", "tone": "綠色跳表光"}, {"time": "2:25–2:50", "part": "終段副歌", "emotion": "最高點", "music": "全停→升半音全編制", "tone": "琥珀暖光"}, {"time": "2:50–3:05", "part": "靜默", "emotion": "餘韻、微暖", "music": "心跳→鋼琴單音", "tone": "黎明粉金"}, {"time": "3:05–3:40", "part": "片尾", "emotion": "鉤子", "music": "跳表節拍加速→驟停", "tone": "黑底白字"}], "tears": [{"time": "0:55", "point": "想不起母親的臉", "power": "輕", "method": "臉溶成光暈（關鍵模糊）"}, {"time": "1:30", "point": "「你要記得我／我是你後座最吵的那個乘客」", "power": "中", "method": "暖色回憶＋副歌真聲"}, {"time": "1:40–1:50", "point": "全家福女兒的臉褪白、草莓從酸變甜", "power": "中", "method": "替換物件"}, {"time": "2:25", "point": "「爸，你頭髮白好多。」", "power": "最強", "method": "全曲靜音，只留一句"}, {"time": "2:45", "point": "手指變透明＋「你不用記得我」", "power": "強", "method": "接觸碰撞＋歌詞改字反轉"}, {"time": "2:55", "point": "她坐上駕駛座：「上車。我載你。」", "power": "暖收", "method": "鋼琴單音呼應片頭"}], "song": {"bpm": "約 70 BPM，4/4 拍", "key": "D 大調；終段副歌升半音至 E♭ 大調", "vocal": "女聲（陳語彤視角），主歌氣音、副歌真聲", "length": "MV 版 2:50（之後接靜默與片尾 BGM）；單曲版加 Outro 約 3:20", "style": "Cinematic orchestral pop ballad, Mandarin female vocal, breathy intimate verses, sparse felt piano intro, slow string build, cello countermelody, brushed drums, half-step key change, emotional climax, 70 BPM", "exclude": "EDM, rap, autotune, heavy rock"}, "arrange": [{"part": "前奏", "inst": "鋼琴單音＋環境音（雨、引擎、收音機）"}, {"part": "主歌一", "inst": "＋女聲氣音、鋼琴和弦"}, {"part": "副歌一", "inst": "＋弦樂墊底、低音提琴"}, {"part": "主歌二", "inst": "＋大提琴對位旋律、刷鼓"}, {"part": "橋段", "inst": "弦樂漸強、定音鼓滾奏，推到頂點後驟停"}, {"part": "口白", "inst": "全部停止，約 1.5 秒空白後說出那一句"}, {"part": "終段副歌", "inst": "升半音，全編制弦樂＋鼓組"}, {"part": "尾聲", "inst": "引擎熄火、一聲心跳，再回到鋼琴單音"}], "lyrics": "[Intro]（0:00–0:35｜鋼琴單音＋引擎聲，無人聲）\n\n[Verse 1]（0:35–1:10）\n凌晨十一點 雨剛停\n你把空車燈 輕輕打開\n後照鏡裡的城市 一格一格\n像誰還沒說完的話\n鋁箔包的烏龍茶 插著吸管\n你說 規矩我懂的\n方向盤握在十二點鐘\n握得那麼穩 卻在發抖\n\n[Chorus 1]（1:10–1:40）\n如果每一站 都要用記憶付車資\n就收走我的雨天 收走我的酸\n收走我哭過的每個晚上\n把甜的留給我\n你要記得我\n我是你後座 最吵的那個乘客\n\n[Verse 2]（1:40–2:05）\n你忘了阿嬤的臉 忘了那條巷子\n草莓原本是酸的\n長大才知道 那是你替我吞下的\n（弦樂間奏）\n一趟一趟 你把自己載遠\n\n[Bridge]（2:05–2:25）\n第四十六站 雨下成河\n第四十七站 是我\n你發動 熄火 再發動——\n去佗位攏好 我載你\n（去哪裡都好，我載你）\n\n[Spoken]（2:25｜全曲停，約 1.5 秒空白後）\n爸，你頭髮白好多。\n\n[Final Chorus]（2:30–2:50｜升半音，全編制）\n如果最後一站 要用你當車資\n就收走我的名字 收走我的臉\n收走我們欠過的每一天\n把路留給我\n你不用記得我\n下一世 不用再找我\n\n[Outro]（單曲版才有；MV 版此處接靜默）\n我會坐在你坐過的位子\n打開空車燈\n載別人回家", "lyricNotes": "- 副歌一「你要記得我」→ 終段副歌「你不用記得我」：只改一個字，意思整個翻過來，呼應第 19 章「下輩子不用再找彼此」。\n- 「把甜的留給我」→「把路留給我」：從被保護，變成放手。\n- 台語只出現一句「去佗位攏好 我載你」，留給父親的口吻。", "eggs": [{"time": "0:35", "egg": "「你自己是佗位人？」答不出來", "ref": "第 1 章"}, {"time": "0:50", "egg": "後座一灘水", "ref": "靈魂離開的意象"}, {"time": "1:25", "egg": "胸口鯉魚胎記發光", "ref": "全書主題"}, {"time": "1:50", "egg": "母親在窗邊看見那台車、寫筆記", "ref": "第 10–11 章"}, {"time": "1:55", "egg": "向日葵花田回頭看後座", "ref": "第 7 章"}, {"time": "2:05", "egg": "【第四十六趟】", "ref": "第 4 章林志豪"}, {"time": "2:20", "egg": "後照鏡裡瞬間蒼老的自己", "ref": "第 6 章"}, {"time": "2:40", "egg": "被雨痕糊住的車資", "ref": "第 16 章"}, {"time": "2:55", "egg": "她坐上駕駛座、小男孩招手", "ref": "第 19 章"}], "bgm": [{"name": "BGM-A：《後座》純音樂版（約 2:50）", "use": "預告剪輯、Penana 書頁宣傳影片、角色介紹短片", "design": "編曲與歌曲版相同，女聲旋律改由大提琴主奏，橋段改小提琴接手。", "prompt": "Cinematic orchestral instrumental, solo felt piano intro, cello lead melody, slow string swell, brushed drums, light rain ambience, melancholic yet warm, half-step key change near the end, 70 BPM, no vocals"}, {"name": "BGM-B：片尾「跳表」cue（3:05–3:40，35 秒）", "use": "片尾詞＋問句字卡與金句", "design": "3:05–3:15｜跳表器「咔」取樣當節拍，約 70 BPM，加入撥弦\n3:15–3:25｜加速到約 110 BPM，低音鋼琴固定音型\n3:25｜驟停，只留一聲引擎熄火\n3:27｜「而她是他最後一程的乘客。」出現時，一個鋼琴單音\n3:35–3:40｜書名，全靜音", "prompt": "Tense cinematic cue, ticking taxi-meter percussion, pizzicato strings, low piano ostinato, tempo accelerating from 70 to 110 BPM, abrupt stop, single piano note ending, 35 seconds, no vocals"}], "silence": "引擎熄火 → 一聲心跳 → 約 2 秒完全無聲 → 晨鳥與風吹花田 → 鋼琴單音（與片頭第一個音相同）。", "endCards": [{"word": "後座", "q": "你上一次坐在爸爸的車後座，是什麼時候？"}, {"word": "頭髮", "q": "你有多久沒仔細看過爸媽的頭髮了？"}, {"word": "草莓", "q": "如果有人替你把所有的酸都收走，你會知道嗎？"}, {"word": "車資", "q": "用最想留住的記憶付車資，你會交出哪一個？"}, {"word": "鯉魚", "q": "胸口的鯉魚，是胎記還是倒數？"}, {"word": "第四十七趟", "q": "為什麼這一趟，他不想收車資？"}], "endLine": "他是司機…\n而她是他最後一程的乘客。", "bookTitle": "《第四十七趟》"};
+function edTbl(path,cols,add){const arr=getPath(S,path)||[];
+  return `<div class="tblwrap"><table class="tbl ed"><tr>${cols.map(c=>`<th>${c[1]}</th>`).join('')}<th></th></tr>${arr.map((r,i)=>`<tr>${cols.map(([k,l,t])=>`<td>${t==='ta'?`<textarea data-b="${path}.${i}.${k}" aria-label="${l}">${esc(r[k])}</textarea>`:`<input data-b="${path}.${i}.${k}" value="${esc(r[k])}" aria-label="${l}">`}</td>`).join('')}<td><button class="btn sm del" data-act="delRow" data-p="${path}" data-i="${i}" aria-label="刪除">×</button></td></tr>`).join('')}</table></div>
+  <button class="btn sm" data-act="addRow" data-p="${path}" data-k="${cols.map(c=>c[0]).join(',')}">＋ ${add||'新增一列'}</button>`;}
+function mvTa(path,label,cls,ph){const v=getPath(S,path)||'';return `<label><span class="lblrow"><span>${label}</span><button class="btn sm" data-act="copyVal" data-p="${path}">複製</button></span><textarea class="${cls||''}" data-b="${path}" placeholder="${esc(ph||'')}">${esc(v)}</textarea></label>`;}
+const mvFilled=()=>{const m=S.mv;return !!(m.concept||m.lyrics||m.curve.length||m.title);};
+R.mv=()=>{const m=S.mv,T=mvTimes(),nShots=S.episodes.reduce((a,e)=>a+(S.shots[e.id]||[]).length,0);
+return `<h2>MV 企劃</h2><p class="hint">把小說做成一支行銷 MV：總企劃（雙層觀看、不劇透、情緒曲線、淚點）、歌曲與 Suno 提示詞、歌詞、分鏡腳本、BGM、片尾字卡與讀者彩蛋。AI 產生後每一格都能自己改。</p>
+<div class="toolbar">
+<label>目標片長（秒）<input type="number" min="30" max="600" data-b="mv.brief.sec" data-num value="${esc(m.brief.sec)}"></label>
+<label style="flex:1 1 220px">歌曲視角／主題<input data-b="mv.brief.pov" value="${esc(m.brief.pov)}" placeholder="例如：女兒寫給父親的歌"></label>
+<label style="flex:1 1 220px">補充要求<input data-b="mv.brief.note" value="${esc(m.brief.note)}" placeholder="例如：不能出現醫院；台語只用一句"></label>
+<button class="btn gold" data-act="aiMV">AI 生成 MV 企劃</button><button class="btn" data-act="mvSample">載入範例《後座》</button><button class="btn" data-act="expMVMD">匯出企劃書</button></div>
+
+<section class="mvsec"><h3>一、MV 總企劃</h3>
+<div class="grid3"><label>曲名<input data-b="mv.title" value="${esc(m.title)}"></label><label>片長／比例<input data-b="mv.length" value="${esc(m.length)}" placeholder="3 分 40 秒（16:9 橫式）"></label><label>曲風<input data-b="mv.genre" value="${esc(m.genre)}"></label>
+<label>畫面風格<input data-b="mv.visual" value="${esc(m.visual)}"></label><label>情緒曲線（一句）<input data-b="mv.curveSum" value="${esc(m.curveSum)}" placeholder="平淡 → 裂縫 → 堆疊 → 高點 → 靜默 → 問句鉤子"></label><label>宣傳金句<input data-b="mv.tagline" value="${esc(m.tagline)}"></label></div>
+<h4>1. 核心概念</h4><textarea data-b="mv.concept">${esc(m.concept)}</textarea>
+<h4>2. 雙層觀看設計</h4>${edTbl('mv.layers',[['who','觀眾'],['see','看到什麼','ta'],['feel','感受','ta']],'新增觀眾層')}
+<h4>3. 不劇透原則</h4><textarea data-b="mv.spoilers" placeholder="- 不出現…（每行一條）">${esc(m.spoilers)}</textarea>
+<h4>4. 情緒與節奏曲線</h4>${edTbl('mv.curve',[['time','時間'],['part','段落'],['emotion','情緒'],['music','音樂'],['tone','畫面調性']],'新增段落')}
+<h4>5. 淚點地圖</h4>${edTbl('mv.tears',[['time','時間'],['point','淚點','ta'],['power','力度'],['method','手法','ta']],'新增淚點')}</section>
+
+<section class="mvsec"><h3>二、歌曲企劃${m.title?`《${esc(m.title)}》`:''}</h3>
+<div class="grid4"><label>速度<input data-b="mv.song.bpm" value="${esc(m.song.bpm)}" placeholder="約 70 BPM，4/4 拍"></label><label>調性<input data-b="mv.song.key" value="${esc(m.song.key)}"></label><label>主唱<input data-b="mv.song.vocal" value="${esc(m.song.vocal)}"></label><label>長度<input data-b="mv.song.length" value="${esc(m.song.length)}"></label></div>
+<h4>漸進式編曲層次</h4>${edTbl('mv.arrange',[['part','段落'],['inst','樂器層次','ta']],'新增段落')}
+<h4>Suno 風格提示詞</h4><div class="grid2">${mvTa('mv.song.style','Style of Music')}${mvTa('mv.song.exclude','Exclude Styles')}</div></section>
+
+<section class="mvsec"><h3>三、歌詞</h3><p class="hint" style="margin-top:0">可直接貼進 Suno 的 Lyrics 欄；標籤後的括號寫時間與編曲說明。</p>
+${mvTa('mv.lyrics','歌詞（Suno Lyrics）','lyrics','[Intro]（0:00–0:35｜鋼琴單音，無人聲）\n\n[Verse 1]（0:35–1:10）\n…')}
+<h4>設計重點</h4><textarea data-b="mv.lyricNotes">${esc(m.lyricNotes)}</textarea></section>
+
+<section class="mvsec"><h3>四、動畫短片分鏡腳本</h3>
+<div class="mvstat"><span>段落 <b>${S.episodes.length}</b></span><span>分鏡 <b>${nShots}</b></span><span>目前總長 <b>${fmtT(T._total)}</b></span>${m.brief.sec?`<span>目標 <b>${fmtT(+m.brief.sec)}</b>${T._total&&T._total!==+m.brief.sec?`（${T._total>+m.brief.sec?'多':'少'} ${Math.abs(T._total-m.brief.sec)} 秒）`:''}</span>`:''}</div>
+<p class="hint">分鏡沿用工坊的分鏡流程：先「段落拆解」把歌曲切段，每段再「AI 生成本段分鏡」。時間碼依鏡頭時長自動累計，匯出企劃書時會整理成 S01、S02… 的分鏡表。</p>
+<div class="row"><button class="btn gold" data-act="go" data-v="breakdown">前往段落拆解</button><button class="btn" data-act="go" data-v="board" ${S.episodes.length?'':'disabled'}>前往分鏡</button></div>
+<h4>讀者彩蛋清單</h4>${edTbl('mv.eggs',[['time','時間'],['egg','彩蛋','ta'],['ref','對應小說']],'新增彩蛋')}</section>
+
+<section class="mvsec"><h3>五、短片 BGM 企劃</h3>
+${m.bgm.map((b,i)=>`<div class="card" style="margin-bottom:12px"><div class="cardhead"><input data-b="mv.bgm.${i}.name" value="${esc(b.name)}" placeholder="BGM-A：純音樂版" aria-label="名稱"><button class="btn sm del" data-act="delRow" data-p="mv.bgm" data-i="${i}" aria-label="刪除">×</button></div>
+<label>用途<input data-b="mv.bgm.${i}.use" value="${esc(b.use)}"></label><label>編曲設計（可逐行寫「時間｜設計」）<textarea data-b="mv.bgm.${i}.design">${esc(b.design)}</textarea></label>${mvTa(`mv.bgm.${i}.prompt`,'Suno 提示詞')}</div>`).join('')}
+<button class="btn sm" data-act="addRow" data-p="mv.bgm" data-k="name,use,design,prompt">＋ 新增 BGM</button>
+<h4>靜默段音效</h4><textarea data-b="mv.silence" placeholder="引擎熄火 → 一聲心跳 → 約 2 秒完全無聲 → …">${esc(m.silence)}</textarea></section>
+
+<section class="mvsec"><h3>六、片尾文字</h3>
+<h4>詞＋問句</h4>${edTbl('mv.endCards',[['word','詞'],['q','問句','ta']],'新增一組')}
+<div class="grid2" style="margin-top:12px"><label>金句（可多行）<textarea data-b="mv.endLine">${esc(m.endLine)}</textarea></label><label>書名<input data-b="mv.bookTitle" value="${esc(m.bookTitle)}" placeholder="《第四十七趟》"></label></div></section>
+<div class="row"><button class="btn gold" data-act="go" data-v="breakdown">下一步：段落拆解</button><button class="btn" data-act="expMVMD">匯出 MV 企劃書（Markdown）</button></div>`;};
+function mvExportCards(){if(!isMV()&&!mvFilled())return '';return `<div class="ex"><h3>MV 企劃書</h3><p>總企劃、歌曲、歌詞、S01～分鏡表、BGM、片尾文字、讀者彩蛋，Markdown 格式。</p><button class="btn gold" data-act="expMVMD">匯出企劃書</button></div>
+<div class="ex"><h3>Suno 歌詞與風格</h3><p>Style of Music、Exclude Styles、歌詞與 BGM 提示詞，一份貼進 Suno。</p><button class="btn gold" data-act="expLyrics">匯出 TXT</button></div>
+<div class="ex"><h3>字卡清單</h3><p>依時間碼列出所有畫面文字與片尾字卡，剪輯上字幕用。</p><button class="btn gold" data-act="expCards">匯出 TXT</button></div>`;}
+const mdCell=v=>String(v??'').replace(/\|/g,'／').replace(/\r?\n+/g,'<br>');
+const mdTable=(h,rows)=>[`| ${h.join(' | ')} |`,`|${h.map(()=>'---').join('|')}|`,...rows.map(r=>`| ${r.map(mdCell).join(' | ')} |`)].join('\n');
+function allShotsMV(){const T=mvTimes(),out=[];let n=0;S.episodes.forEach((e,ei)=>(S.shots[e.id]||[]).forEach((s,i)=>{n++;out.push({s,ep:e,ei,i,no:'S'+String(n).padStart(2,'0'),tc:tcOf(s,T)});}));return out;}
+function buildMVMD(){const m=S.mv,P=S.project,L=[];const t=m.bookTitle||`《${P.title}》`;
+  L.push(`# ${t.replace(/^《?(.*?)》?$/,'《$1》')}行銷 MV${m.title?`《${m.title}》`:''}企劃書`,'');
+  if(m.tagline)L.push(...m.tagline.split('\n').map(x=>'> '+x),'');
+  L.push(mdTable(['項目','內容'],[['片長',m.length],['曲名',m.title?`《${m.title}》`:''],['曲風',m.genre],['畫面',m.visual||STYLE[P.style].zh],['情緒曲線',m.curveSum],['畫面比例',P.aspect]].filter(r=>r[1])),'','---','');
+  L.push('## 一、MV 總企劃','','### 1. 核心概念','',m.concept||'（未填）','');
+  L.push('### 2. 雙層觀看設計','',mdTable(['觀眾','看到什麼','感受'],m.layers.map(x=>[x.who,x.see,x.feel])),'');
+  L.push('### 3. 不劇透原則','',m.spoilers||'（未填）','');
+  L.push('### 4. 情緒與節奏曲線','',mdTable(['時間','段落','情緒','音樂','畫面調性'],m.curve.map(x=>[x.time,x.part,x.emotion,x.music,x.tone])),'');
+  L.push('### 5. 淚點地圖','',mdTable(['時間','淚點','力度','手法'],m.tears.map(x=>[x.time,x.point,x.power,x.method])),'','---','');
+  L.push(`## 二、歌曲企劃${m.title?`《${m.title}》`:''}`,'','### 1. 基本規格','',mdTable(['項目','內容'],[['速度',m.song.bpm],['調性',m.song.key],['主唱',m.song.vocal],['長度',m.song.length]]),'');
+  L.push('### 2. 漸進式編曲層次','',mdTable(['段落','樂器層次'],m.arrange.map(x=>[x.part,x.inst])),'');
+  L.push('### 3. Suno 風格提示詞','','**Style of Music**','```',m.song.style||'','```','','**Exclude Styles**','```',m.song.exclude||'','```','','---','');
+  L.push(`## 三、歌詞${m.title?`《${m.title}》`:''}`,'','> 可直接貼進 Suno 的 Lyrics 欄。','','```',m.lyrics||'','```','');
+  if(m.lyricNotes)L.push('**設計重點**',m.lyricNotes,'');L.push('---','');
+  const sh=allShotsMV(),T=mvTimes();
+  L.push(`## 四、動畫短片分鏡腳本（${sh.length} 鏡，${fmtT(T._total)}）`,'',`**畫面總風格**：${m.visual||STYLE[P.style].zh}，比例 ${P.aspect}。`,'');
+  L.push(mdTable(['編號','時間','景別／運鏡','畫面','歌詞／對白','音效／字卡'],sh.map(o=>{const s=o.s;return [o.no,o.tc,`${s.size}／${s.camera}`,s.visualZh,s.dialogue.filter(d=>d.line).map(d=>`${d.who}：${d.line}`).join('／')||'—',[s.sfx||'—',s.screenText?`字卡：${s.screenText}`:''].filter(Boolean).join('｜')];})),'');
+  if(m.eggs.length)L.push('### 讀者彩蛋清單','',mdTable(['時間','彩蛋','對應小說'],m.eggs.map(x=>[x.time,x.egg,x.ref])),'');
+  L.push('---','','## 五、短片 BGM 企劃','');
+  m.bgm.forEach(b=>{L.push(`### ${b.name||'BGM'}`,'');if(b.use)L.push(`用途：${b.use}`,'');if(b.design){const ls=b.design.split('\n').filter(Boolean);if(ls.every(x=>x.includes('｜')))L.push(mdTable(['時間','設計'],ls.map(x=>{const k=x.indexOf('｜');return [x.slice(0,k),x.slice(k+1)];})),'');else L.push(b.design,'');}if(b.prompt)L.push('```',b.prompt,'```','');});
+  if(m.silence)L.push('### 靜默段音效','',m.silence,'');
+  L.push('---','','## 六、片尾文字（定稿）','',`**詞＋問句（${m.endCards.length} 組）**`,...m.endCards.map((c,i)=>`${i+1}. ${c.word}——${c.q}`),'');
+  if(m.endLine||m.bookTitle)L.push('**金句與書名**',...(m.endLine||'').split('\n').filter(Boolean).map(x=>'> '+x),...(m.bookTitle?['>','> '+m.bookTitle]:[]),'');
+  return L.join('\n');}
+function buildLyrics(){const m=S.mv;return [`《${m.title||S.project.title}》Suno 用`,'','【Style of Music】',m.song.style||'','','【Exclude Styles】',m.song.exclude||'','','【Lyrics】',m.lyrics||'','',...m.bgm.filter(b=>b.prompt).flatMap(b=>[`【${b.name||'BGM'}】`,b.prompt,''])].join('\n');}
+function buildCards(){const L=[`《${S.mv.title||S.project.title}》字卡清單`,''];allShotsMV().filter(o=>o.s.screenText).forEach(o=>L.push(`${o.tc}　${o.no}　${o.s.screenText}`));
+  if(S.mv.endCards.length){L.push('','＝＝ 片尾詞＋問句 ＝＝');S.mv.endCards.forEach(c=>L.push(`${c.word}——${c.q}`));}
+  if(S.mv.endLine)L.push('','＝＝ 金句 ＝＝',S.mv.endLine);if(S.mv.bookTitle)L.push('',S.mv.bookTitle);return L.join('\n');}
+function applyMV(d){const m=fixMV({...S.mv,...d,brief:S.mv.brief,song:{...S.mv.song,...(d.song||{})}});
+  const arr=(v,keys)=>Array.isArray(v)?v.map(x=>{const o={};keys.forEach(k=>o[k]=String((x&&x[k])??''));return o;}):[];
+  m.layers=arr(d.layers,['who','see','feel']);if(!m.layers.length)m.layers=MVDEF().layers;
+  m.curve=arr(d.curve,['time','part','emotion','music','tone']);m.tears=arr(d.tears,['time','point','power','method']);m.arrange=arr(d.arrange,['part','inst']);
+  m.bgm=arr(d.bgm,['name','use','design','prompt']);m.endCards=arr(d.endCards,['word','q']);m.eggs=arr(d.eggs,['time','egg','ref']);
+  ['title','length','genre','visual','curveSum','tagline','concept','spoilers','lyrics','lyricNotes','silence','endLine','bookTitle'].forEach(k=>m[k]=Array.isArray(d[k])?d[k].join('\n'):String(d[k]??''));
+  if(!m.concept&&!m.lyrics&&!m.curve.length)throw new Error('empty');S.mv=m;}
+
+/* ========== 匯入工具 ========== */
+const stripHtml=h=>{const d=document.createElement('div');d.innerHTML=String(h).replace(/<\/(p|div|h\d|li)>|<br\s*\/?>/gi,'\n');return (d.textContent||'').replace(/\n{3,}/g,'\n\n').trim();};
+function importWP(o){const texts=[],chars=[];
+  (function walk(x,dep){if(dep>7||!x||typeof x!=='object')return;if(Array.isArray(x)){x.forEach(y=>walk(y,dep+1));return;}
+    const body=x.content||x.body||x.html||x.text;
+    if(typeof body==='string'&&body.length>60){texts.push(((x.title||x.name)?`【${x.title||x.name}】\n`:'')+stripHtml(body));return;}
+    if(typeof x.name==='string'&&(x.appearance||x.description||x.desc||x.personality||x.role||x.identity)){chars.push({name:x.name,role:x.role||x.identity||'',zh:[x.appearance,x.description,x.desc,x.personality].filter(v=>typeof v==='string').join('；'),en:'',voice:''});}
+    for(const k in x)if(x[k]&&typeof x[k]==='object')walk(x[k],dep+1);})(o,0);
+  if(texts.length)S.source.text=(S.source.text?S.source.text+'\n\n':'')+texts.join('\n\n');
+  let add=0;chars.forEach(c=>{if(!S.bible.characters.find(y=>y.name===c.name)){S.bible.characters.push(c);add++;}});
+  if(o.title&&S.project.title==='未命名作品')S.project.title=String(o.title);
+  toast(texts.length||add?`已匯入 ${texts.length} 段章節、${add} 位角色`:'這個 JSON 裡找不到章節或人物資料');
+}
+function handleFile(inp){const f=inp.files&&inp.files[0];if(!f)return;const kind=inp.dataset.file;const r=new FileReader();
+  r.onload=()=>{try{
+    if(kind==='text'){S.source.text=(S.source.text?S.source.text+'\n\n':'')+r.result;toast(`已加入 ${f.name}`);}
+    else if(kind==='wp'){importWP(JSON.parse(r.result));}
+    else if(kind==='backup'){const d=JSON.parse(r.result);if(!d.project||!d.episodes)throw new Error();inp.value='';createProject((d.project.title||f.name.replace(/\.json$/i,''))+'（匯入）',d);return;}
+    save();renderTop();render();
+  }catch(e){toast('檔案格式不正確，無法讀取');}inp.value='';};
+  r.readAsText(f,'utf-8');}
+
+/* ========== 匯出工具 ========== */
+async function download(name,data,mime){
+  setSync('','存檔中…');
+  try{const r=await gs('saveExport',name,data,mime);setSync('ok','已同步 '+hhmm(Date.now()));
+    openModal('已存到雲端硬碟',`<p>${esc(name)} 已存到「小說影視化工坊／匯出檔」。</p><div class="row"><a class="btn gold" href="${esc(r.url)}" target="_blank" rel="noopener">開啟檔案</a></div>`);}
+  catch(e){const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([data],{type:mime}));a.download=name;document.body.appendChild(a);a.click();setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove();},500);toast('雲端存檔失敗，改為下載到本機');setSync(CUR.id?'bad':'','雲端存檔失敗');}
+}
+const fname=ext=>`${S.project.title.replace(/[\\/:*?"<>|]/g,'')}_${new Date().toISOString().slice(0,10)}.${ext}`;
+const csvCell=v=>`"${String(v??'').replace(/"/g,'""')}"`;
+function buildCSV(){const comic=S.project.target==='comic';const mv=isMV(),T=mv?mvTimes():null;const rows=[[unit(),'編號',...(mv?['時間碼']:[]),'頁','格','時長','景別','運鏡','轉譯手法','場景','角色','畫面描述','對白','音效',...(mv?['字卡']:[]),'繪圖提示詞','影片提示詞','生成方式','出片狀態']];
+  S.episodes.forEach((e,ei)=>sortShots(S.shots[e.id]||[]).forEach((s,i)=>rows.push([ei+1,i+1,...(mv?[tcOf(s,T)]:[]),comic?s.page:'',comic?s.panel:'',comic?'':s.duration,s.size,s.camera,s.technique,s.scene,s.chars.join('、'),s.visualZh,s.dialogue.map(d=>`${d.who}：${d.line}`).join('\n'),s.sfx,...(mv?[s.screenText||'']:[]),imgPrompt(s).en,comic?'':outputs(s,i).map(o=>o.label+'：\n'+o.text).join('\n---\n'),comic?'':METHOD[s.method||'text'],comic?'':STATUS_ZH[s.status||'']])));
+  return '\ufeff'+rows.map(r=>r.map(csvCell).join(',')).join('\r\n');}
+function buildTXT(){const mv=isMV(),T=mv?mvTimes():null;const L=[`《${S.project.title}》分鏡腳本　${S.project.genre}／${S.project.target==='comic'?'漫畫':mv?'MV':'AI 短劇'}／${STYLE[S.project.style].zh}／${S.project.aspect}`,''];
+  L.push('＝＝ 角色 ＝＝');S.bible.characters.forEach(c=>L.push(`${c.name}（${c.role}）：${c.zh}\n  鎖定詞：${c.en}\n  聲線：${c.voice}`));L.push('');
+  S.episodes.forEach((e,ei)=>{L.push(`＝＝ 第${ei+1}${unit()}　${e.title} ＝＝`,`梗概：${e.summary}`,`${unit()}尾勾子：${e.hook}`,'');
+    e.beats.forEach((b,i)=>L.push(`P${i+1}［${b.stage}｜${b.hook}］${b.text}`));L.push('');
+    const a=S.audio[e.id];if(a)L.push(`配樂：${a.bgm?.mood||''}\nSUNO：${a.bgm?.suno||''}\n環境音：${a.ambience||''}`,'');
+    sortShots(S.shots[e.id]||[]).forEach((s,i)=>{L.push(`— ${shotLabel(s,i)}${mv?'｜'+tcOf(s,T):''}｜${s.size}｜${s.camera}${S.project.target==='comic'?'':'｜'+s.duration+'秒'}${s.technique?'｜'+s.technique:''}`,`畫面：${s.visualZh}`);
+      s.dialogue.filter(d=>d.line).forEach(d=>L.push(`${d.who}${d.tone?`（${d.tone}）`:''}：「${d.line}」`));if(s.sfx)L.push(`音效：${s.sfx}`);if(s.onomatopoeia)L.push(`狀聲詞：${s.onomatopoeia}`);if(s.screenText&&S.project.target!=='comic')L.push(`畫面文字／字卡：${s.screenText}`);
+      L.push(`[繪圖] ${imgPrompt(s).en}`);if(S.project.target!=='comic')L.push(outputs(s,i).map(o=>`[${o.label}]\n${o.text}`).join('\n'));L.push('');});});
+  return L.join('\n');}
+async function copyText(t){try{await navigator.clipboard.writeText(t);toast('已複製');}catch(e){const ta=document.createElement('textarea');ta.value=t;ta.style.position='fixed';ta.style.opacity='0';document.body.appendChild(ta);ta.select();try{document.execCommand('copy');toast('已複製');}catch(_){toast('無法自動複製，請手動選取');}ta.remove();}}
+function twice(el,fn){if(el.dataset.armed){fn();return;}const o=el.textContent;el.dataset.armed='1';el.textContent='再按一次確認';setTimeout(()=>{if(el.isConnected){el.textContent=o;delete el.dataset.armed;}},3000);}
+
+/* ========== 動作 ========== */
+const A={
+go:el=>{S.ui.view=el.dataset.v;save();render();window.scrollTo(0,0);},
+pickEp:el=>{S.ui.ep=el.dataset.id;S.ui.shot=0;save();render();},
+clearSrc:el=>twice(el,()=>{S.source.text='';save();render();}),
+addEp:()=>{S.episodes.push({id:uid(),title:'新的一'+unit(),summary:'',hook:'',beats:[{id:uid(),text:'',stage:'起',hook:3}]});save();render();},
+delEp:el=>twice(el,()=>{const e=S.episodes.splice(+el.dataset.i,1)[0];delete S.shots[e.id];delete S.audio[e.id];save();render();}),
+addBeat:el=>{S.episodes[+el.dataset.i].beats.push({id:uid(),text:'',stage:'承',hook:3});save();render();},
+delBeat:el=>{S.episodes[+el.dataset.i].beats.splice(+el.dataset.j,1);save();render();},
+addCard:el=>{S.bible[el.dataset.t].push({name:'',role:'',zh:'',en:'',voice:''});save();render();},
+delCard:el=>twice(el,()=>{S.bible[el.dataset.t].splice(+el.dataset.i,1);save();render();}),
+aiBreakdown:()=>{if(!S.source.text.trim()&&!(isMV()&&(S.mv.lyrics||S.mv.curve.length))){toast(isMV()?'先在「MV 企劃」填好情緒曲線或歌詞，或到「匯入小說」貼上原文':'先到「匯入小說」貼上原文');return;}
+  const n=Math.max(1,+$('#bkN').value||5),b=Math.max(3,+$('#bkB').value||6),mode=$('#bkMode').value;
+  runAI('AI '+viewName('breakdown'),PR.breakdown(n,b),d=>{const eps=(d.episodes||[]).map(e=>({id:uid(),title:e.title||'',summary:e.summary||'',hook:e.hook||'',beats:(e.beats||[]).map(x=>({id:uid(),text:x.text||'',stage:STAGES.includes(x.stage)?x.stage:'承',hook:Math.min(5,Math.max(1,+x.hook||3))}))}));
+    if(!eps.length)throw new Error('empty');if(mode==='replace'){S.episodes=eps;S.shots={};S.audio={};}else S.episodes.push(...eps);S.ui.ep=eps[0].id;},'breakdown');},
+aiBible:()=>{if(!S.source.text.trim()){toast('先到「匯入小說」貼上原文');return;}
+  runAI('AI 建立設定卡',PR.bible(),d=>{['characters','scenes','props'].forEach(t=>(d[t]||[]).forEach(c=>{if(!c.name)return;const ex=S.bible[t].find(y=>y.name===c.name);
+    if(ex){for(const k of ['role','zh','en','voice'])if(!ex[k]&&c[k])ex[k]=c[k];}else S.bible[t].push({name:c.name,role:c.role||'',zh:c.zh||'',en:c.en||'',voice:c.voice||''});}));},'bible');},
+aiBoard:el=>{const ep=curEp();if(!ep)return;const has=(S.shots[ep.id]||[]).length;
+  const go=()=>runAI(`AI 生成第${S.episodes.indexOf(ep)+1}${unit()}分鏡`,PR.board(ep,S.episodes.indexOf(ep)),d=>{const arr=(d.shots||[]).map(x=>normShot(x));if(!arr.length)throw new Error('empty');S.shots[ep.id]=arr;},'board');
+  has?twice(el,go):go();},
+addShot:()=>{const ep=curEp();if(!ep)return;const arr=S.shots[ep.id]=S.shots[ep.id]||[];const last=arr[arr.length-1];
+  let page=1,panel=1;if(last){page=last.page;panel=last.panel+1;if(panel>4){page++;panel=1;}}
+  arr.push(normShot({page,panel}));save();render();},
+dupShot:el=>{const ep=curEp(),arr=S.shots[ep.id],i=+el.dataset.i;const c=normShot(JSON.parse(JSON.stringify(arr[i])));c.id=uid();arr.splice(i+1,0,c);save();render();},
+delShot:el=>twice(el,()=>{S.shots[curEp().id].splice(+el.dataset.i,1);save();render();}),
+addLine:el=>{S.shots[curEp().id][+el.dataset.i].dialogue.push({who:'',line:'',tone:''});save();render();},
+delLine:el=>{S.shots[curEp().id][+el.dataset.i].dialogue.splice(+el.dataset.j,1);save();render();},
+revise:el=>{const i=+el.dataset.i,ins=($('#rv-'+i).value||'').trim();if(!ins){toast('先寫下修改意見，或改按「無法出圖」一鍵重製');return;}
+  const ep=curEp(),sh=S.shots[ep.id][i];
+  runAI(`AI 修改 ${shotLabel(sh,i)}`,PR.revise(sh,ins),d=>applyShot(ep,i,d,sh),'revise');},
+fix:el=>{const i=+el.dataset.i,k=el.dataset.k,ep=curEp(),sh=S.shots[ep.id][i];
+  const ex=[...document.querySelectorAll(`[data-fx="${i}"]:checked`)].map(x=>x.value),note=(($('#rv-'+i)||{}).value||'').trim();
+  runAI(`${PLAT[k].zh} 無法出圖・重製 ${shotLabel(sh,i)}`,PR.fix(sh,k,ex,note),d=>applyShot(ep,i,d,sh,{status:''}),'revise');},
+rewrite:el=>{const i=+el.dataset.i,ep=curEp(),sh=S.shots[ep.id][i],ds=diffs(sh);if(!ds.length){toast('這一鏡沒有修改');return;}
+  pending={title:`依修改重寫 ${shotLabel(sh,i)}`,prompt:PR.rewrite(sh,ds),apply:d=>applyShot(ep,i,d,sh),task:'revise'};showManual();},
+rebase:el=>{const i=+el.dataset.i,sh=S.shots[curEp().id][i];sh.orig=snap(sh);save();refreshDiff(curEp().id,i);toast('已設為新基準');},
+setStatus:el=>{const ep=curEp(),arr=S.shots[ep.id],i=+el.dataset.i;arr[i].status=el.dataset.v;
+  if(el.dataset.v==='ok'&&S.ui.view==='shoot'&&i<arr.length-1){S.ui.shot=i+1;toast('已標記成功，換下一鏡');}save();render();},
+shotGo:el=>{S.ui.shot=+el.dataset.k;save();render();const c=document.getElementById('shootcard');if(c)c.scrollIntoView({block:'start'});},
+aiAudio:()=>{const ep=curEp();runAI(`AI 設計第${S.episodes.indexOf(ep)+1}${unit()}配樂`,PR.audio(ep,S.episodes.indexOf(ep)),d=>{
+  S.audio[ep.id]={bgm:{mood:d.bgm?.mood||'',suno:d.bgm?.suno||'',cues:Array.isArray(d.bgm?.cues)?d.bgm.cues:[]},ambience:d.ambience||'',sfx:Array.isArray(d.sfx)?d.sfx:[]};
+  (d.sfx||[]).forEach(f=>{const s=(S.shots[ep.id]||[])[+f.shot-1];if(s&&f.zh)s.sfx=f.zh;});},'audio');},
+copyEl:el=>{const t=document.getElementById(el.dataset.t);if(t)copyText(t.textContent);},
+copyVal:el=>{const v=String(getPath(S,el.dataset.p)||'');if(!v){toast('這一欄還是空的');return;}copyText(v);},
+addRow:el=>{const p=el.dataset.p;let arr=getPath(S,p);if(!Array.isArray(arr)){arr=[];setPath(S,p,arr);}const o={};(el.dataset.k||'').split(',').forEach(k=>o[k]='');arr.push(o);save();render();},
+delRow:el=>twice(el,()=>{const arr=getPath(S,el.dataset.p);if(Array.isArray(arr))arr.splice(+el.dataset.i,1);save();render();}),
+aiMV:el=>{if(!S.source.text.trim()&&!S.mv.brief.note.trim()&&!S.mv.brief.pov.trim()){toast('先到「匯入小說」貼上原文，或填寫歌曲視角與補充要求');return;}
+  const go=()=>runAI('AI 生成 MV 企劃',PR.mvPlan(),d=>applyMV(d),'mvPlan');mvFilled()?twice(el,go):go();},
+mvSample:el=>{const go=()=>{applyMV(JSON.parse(JSON.stringify(MV_SAMPLE)));S.mv.brief.sec=220;save();render();toast('已載入《後座》範例企劃，可直接修改');};mvFilled()?twice(el,go):go();},
+expMVMD:()=>download(fname('md').replace(/(\.md)$/,'_MV企劃書$1'),buildMVMD(),'text/markdown'),
+expLyrics:()=>download(fname('txt').replace(/(\.txt)$/,'_Suno歌詞$1'),buildLyrics(),'text/plain'),
+expCards:()=>download(fname('txt').replace(/(\.txt)$/,'_字卡清單$1'),buildCards(),'text/plain'),
+copyAll:el=>{const ep=curEp(),k=el.dataset.k;copyText(sortShots(S.shots[ep.id]||[]).map((s,i)=>`【${shotLabel(s,i)}】\n${k==='img'?imgPrompt(s).en:outputs(s,i).filter(o=>k==='aud'?o.audio:o.main).map(o=>(o.label.includes('段')?`〈${o.label}〉\n`:'')+o.text).join('\n\n')}`).join('\n\n'));},
+expJSON:()=>download(fname('json'),JSON.stringify(S,null,1),'application/json'),
+impJSON:()=>$('#backupIn').click(),
+expCSV:()=>download(fname('csv'),buildCSV(),'text/csv'),
+expTXT:()=>download(fname('txt'),buildTXT(),'text/plain'),
+newProj:()=>{const t=($('#newTitle').value||'').trim();if(!t){toast('先輸入作品名稱');return;}createProject(t);},
+openProj:el=>{if(dirty)flush();openProject(el.dataset.id);},
+delProj:el=>twice(el,async()=>{const id=el.dataset.id;try{await gs('deleteProject',id);}catch(e){toast('刪除失敗');return;}
+  try{localStorage.removeItem(CKEY+id)}catch(e){}PROJECTS=PROJECTS.filter(p=>p.id!==id);
+  if(CUR.id===id){CUR={id:null,updated:0};S={...DEF(),ui:S.ui};S.ui.project=null;LASTJS='';setSync('','');}
+  if(!PROJECTS.length)LISTSTATE='還沒有作品。輸入名稱後按「建立作品」。';saveUI();renderTop();render();toast('已移到雲端硬碟垃圾桶，30 天內可救回');}),
+refreshList:()=>{LISTSTATE='讀取作品清單中…';refreshList();},
+useRemote:()=>{if(!LC)return;applyData(JSON.parse(LC.remote));CUR.updated=LC.updated;LASTJS=JSON.stringify(dataOf());dirty=false;cacheLocal(false);closeModal();renderTop();render();setSync('ok','已同步 '+hhmm(LC.updated));toast('已載入雲端版本');},
+forceMine:()=>{closeModal();dirty=true;flush(true);},
+closeModal:()=>{ctl?.abort();closeModal();},
+stopAI:()=>ctl?.abort(),
+toManual:()=>{ctl?.abort();setTimeout(()=>showManual(),50);},
+retryAI:()=>{S.ui.ai='auto';save();renderTop();runAI(pending.title,pending.prompt,pending.apply,pending.task);},
+copyPrompt:()=>copyText(pending.prompt),
+applyManual:()=>{try{pending.apply(parseJSON($('#mPaste').value));save();closeModal();render();toast('已套用結果');}catch(e){toast('無法解析，請確認貼上的是完整 JSON');}}
+};
+
+/* ========== 事件 ========== */
+document.addEventListener('click',e=>{const el=e.target.closest('[data-act]');if(!el)return;const f=A[el.dataset.act];if(f){e.preventDefault();f(el);}});
+document.addEventListener('input',e=>{const t=e.target,b=t.dataset&&t.dataset.b;if(!b)return;let v=t.value;
+  if(t.type==='number'||t.dataset.num!==undefined)v=Number(v)||0;
+  if(t.dataset.list!==undefined)v=v.split(/[、,，]/).map(x=>x.trim()).filter(Boolean);
+  setPath(S,b,v);save();
+  if(b==='source.text'){const c=$('#cnt');if(c)c.textContent=v.length.toLocaleString();}
+  if(b==='project.title')renderTop();
+  if(b.startsWith('shots.')){const p=b.split('.');refreshDiff(p[1],+p[2]);}});
+document.addEventListener('change',e=>{const t=e.target;if(t.dataset.file){handleFile(t);return;}if(t.id==='engSel'&&false){S.ui.ai=t.value;save();renderTop();return;}if(t.id==='tierSel'){S.ui.tier=t.value;save();toast(t.value==='task'?'依任務自動配等級：拆解／分鏡深度、設定卡／配樂標準、單鏡修改快速':`之後全部使用${TIER_ZH[t.value]}等級`);return;}if(t.id==='engSel'){S.ui.engine=t.value;save();return;}if(t.dataset.rr!==undefined){render();}});
+document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!$('#modal').hidden)A.closeModal();});
+$('#themeBtn').onclick=()=>{const r=document.documentElement;const cur=r.dataset.theme||(matchMedia('(prefers-color-scheme: light)').matches?'light':'dark');r.dataset.theme=cur==='dark'?'light':'dark';try{localStorage.setItem(KEY+'-theme',r.dataset.theme)}catch(e){}};
+try{const th=localStorage.getItem(KEY+'-theme');document.documentElement.dataset.theme=th||'dark';}catch(e){document.documentElement.dataset.theme='dark';}
+
+document.addEventListener('visibilitychange',async()=>{
+  if(!HAS_GAS||!CUR.id)return;
+  if(document.visibilityState==='hidden'){if(dirty)flush();return;}
+  if(dirty||saving)return;
+  try{const m=await gs('getProjectMeta',CUR.id);if(m&&m.updated>CUR.updated){const r=await gs('loadProject',CUR.id);applyData(JSON.parse(r.content));CUR.updated=r.updated;LASTJS=JSON.stringify(dataOf());cacheLocal(false);renderTop();render();setSync('ok','已同步 '+hhmm(r.updated));toast('已載入其他裝置的最新修改');}}catch(e){}
+});
+window.addEventListener('beforeunload',e=>{if(dirty){cacheLocal(true);}});
+(async function init(){
+  renderTop();render();
+  if(!HAS_GAS){setSync('bad','本機預覽');await refreshList();return;}
+  await refreshList();
+  const last=S.ui.project;
+  if(last&&PROJECTS.find(p=>p.id===last))await openProject(last);
+  else{S.ui.view='projects';setSync('','請選擇作品');render();}
+})();
+</script>
+</body>
+</html>

@@ -62,3 +62,9 @@ AI 解析需要在 Claude 對話視窗中開啟才能連線。離線時改按「
 約 1 分鐘後網站上線：<https://kib36833-design.github.io/AI_Used/>
 
 之後只要 `main` 有更新，GitHub 會自動重新發佈。手機用瀏覽器開啟後選「加入主畫面」即成為 App。資料存在該裝置瀏覽器的本機儲存區（各裝置獨立），換機時用「💾 匯出備份 → 📂 匯入備份」搬移。
+
+---
+
+## 另一個工具：小說影視化工坊
+
+`novel-studio/` 是董元創作室的「小說影視化工坊」v3（含 MV 製作），有單機版、GAS 版與線上版，說明見 [novel-studio/README.md](novel-studio/README.md)。線上版網址：<https://kib36833-design.github.io/AI_Used/novel-studio/>
