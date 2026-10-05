@@ -231,6 +231,34 @@ textarea.lyrics{min-height:360px;font-family:var(--serif);font-size:15px;line-he
 </style>
 </head>
 <body>
+<div id="bootFail" hidden></div>
+<script>
+/* 開機防護：主程式若在開啟時出錯，顯示錯誤訊息與復原按鈕，而不是一片黑畫面 */
+(function(){
+  var UIKEY='dy-film-studio-gas-ui';
+  function esc(s){return String(s).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];});}
+  window.__bootFail=function(msg){
+    if(window.__booted)return;
+    var b=document.getElementById('bootFail');if(!b||!b.hidden)return;
+    b.hidden=false;
+    b.setAttribute('style','position:fixed;inset:0;z-index:99;overflow:auto;background:#0c0a08;color:#ede4d0;padding:calc(env(safe-area-inset-top,0px) + 24px) 20px 24px;font:15px/1.7 "Noto Sans TC","PingFang TC","Microsoft JhengHei",sans-serif');
+    b.innerHTML='<div style="max-width:640px;margin:0 auto;border:1px solid #c9a24a;border-radius:12px;padding:18px 20px;background:#16130f">'+
+      '<h2 style="margin:0 0 8px;color:#e8cd83;font-size:20px">小說影視化工坊沒有順利開啟</h2>'+
+      '<p style="margin:0 0 10px;color:#9b8f78">你的作品資料都還在，沒有被刪除。請先按「回到作品書架」；如果還是不行，把下面的錯誤訊息複製給阿勞。</p>'+
+      '<pre id="bootMsg" style="white-space:pre-wrap;word-break:break-word;background:#0c0a08;border:1px solid #3a3125;border-radius:6px;padding:10px;font-size:13px;color:#e8cd83;max-height:240px;overflow:auto">'+esc(msg)+'</pre>'+
+      '<div style="display:flex;flex-wrap:wrap;gap:10px;margin-top:12px">'+
+      '<button id="bootHome" type="button" style="background:#c9a24a;color:#0c0a08;border:0;border-radius:6px;padding:8px 14px;font-weight:700;cursor:pointer">回到作品書架</button>'+
+      '<button id="bootCopy" type="button" style="background:#201b15;color:#ede4d0;border:1px solid #3a3125;border-radius:6px;padding:8px 14px;cursor:pointer">複製錯誤訊息</button></div>'+
+      '<p style="margin:10px 0 0;font-size:13px;color:#9b8f78">按了沒反應的話，請重新整理瀏覽器頁面。</p></div>';
+    document.getElementById('bootHome').onclick=function(){try{localStorage.removeItem(UIKEY);}catch(e){}try{location.reload();}catch(e){}};
+    document.getElementById('bootCopy').onclick=function(){var t=document.getElementById('bootMsg').textContent;
+      try{navigator.clipboard.writeText(t).catch(function(){});}catch(e){}var r=document.createRange();r.selectNodeContents(document.getElementById('bootMsg'));var s=getSelection();s.removeAllRanges();s.addRange(r);};
+  };
+  window.addEventListener('error',function(e){window.__bootFail((e.message||'未知錯誤')+(e.lineno?'（第 '+e.lineno+' 行）':'')+(e.error&&e.error.stack?'\n'+e.error.stack:''));});
+  window.addEventListener('unhandledrejection',function(e){var r=e.reason||{};window.__bootFail('非同步錯誤：'+(r.message||r)+(r.stack?'\n'+r.stack:''));});
+  setTimeout(function(){window.__bootFail('畫面在 10 秒內沒有完成載入。\n瀏覽器：'+navigator.userAgent);},10000);
+})();
+</script>
 <header class="top">
   <div class="brand"><small>董元創作室</small><b id="ttl">小說影視化工坊</b></div>
   <span class="sync" id="sync">連線中…</span>
@@ -651,7 +679,7 @@ function renderTop(){
 function renderNav(){$('#rail').innerHTML=`<button class="${S.ui.view==='projects'?'on':''}" data-act="go" data-v="projects"><i>書</i>作品書架</button>`+
   (CUR.id?views().map(([k,l],i)=>`<button class="${S.ui.view===k?'on':''}" data-act="go" data-v="${k}"><i>${String(i+1).padStart(2,'0')}</i>${l}</button>`).join(''):'')+
   `<p class="railnote">每次修改會自動存到你的 Google 雲端硬碟；手機、平板、電腦開同一個網址就能接著做。</p>`;}
-function render(){if(!CUR.id&&S.ui.view!=='projects')S.ui.view='projects';if(S.ui.view==='mv'&&!isMV())S.ui.view='import';renderNav();$('#view').innerHTML=(R[S.ui.view]||R.projects)();}
+function render(){if(!CUR.id&&S.ui.view!=='projects')S.ui.view='projects';if(S.ui.view==='mv'&&!isMV())S.ui.view='import';renderNav();try{$('#view').innerHTML=(R[S.ui.view]||R.projects)();}catch(e){$('#view').innerHTML=errBox(e);}}
 function epPicker(){
   if(!S.episodes.length)return '';
   if(!S.episodes.find(e=>e.id===S.ui.ep))S.ui.ep=S.episodes[0].id;
@@ -899,7 +927,7 @@ function handleFile(inp){const f=inp.files&&inp.files[0];if(!f)return;const kind
   r.onload=()=>{try{
     if(kind==='text'){S.source.text=(S.source.text?S.source.text+'\n\n':'')+r.result;toast(`已加入 ${f.name}`);}
     else if(kind==='wp'){importWP(JSON.parse(r.result));}
-    else if(kind==='backup'){const d=JSON.parse(r.result);if(!d.project||!d.episodes)throw new Error();inp.value='';createProject((d.project.title||f.name.replace(/\.json$/i,''))+'（匯入）',d);return;}
+    else if(kind==='backup'){const d=JSON.parse(r.result);if(!d.project||!d.episodes)throw new Error();inp.value='';createProject(String(d.project.title||f.name.replace(/\.json$/i,'')).replace(/(（匯入）)+$/,'')+'（匯入）',d);return;}
     save();renderTop();render();
   }catch(e){toast('檔案格式不正確，無法讀取');}inp.value='';};
   r.readAsText(f,'utf-8');}
@@ -1004,6 +1032,9 @@ applyManual:()=>{try{pending.apply(parseJSON($('#mPaste').value));save();closeMo
 };
 
 /* ========== 事件 ========== */
+function errBox(e){console.error(e);return `<div class="empty"><b>這一頁顯示失敗</b><pre style="white-space:pre-wrap;text-align:left;font-size:12.5px">${esc((e&&e.message)||e)}</pre><button class="btn gold" data-act="go" data-v="import">回到匯入小說</button></div>`;}
+window.addEventListener('error',e=>{if(window.__booted)toast('發生錯誤：'+(e.message||'未知錯誤'));});
+window.addEventListener('unhandledrejection',e=>{if(window.__booted)toast('發生錯誤：'+((e.reason&&e.reason.message)||e.reason||'未知錯誤'));});
 document.addEventListener('click',e=>{const el=e.target.closest('[data-act]');if(!el)return;const f=A[el.dataset.act];if(f){e.preventDefault();f(el);}});
 document.addEventListener('input',e=>{const t=e.target,b=t.dataset&&t.dataset.b;if(!b)return;let v=t.value;
   if(t.type==='number'||t.dataset.num!==undefined)v=Number(v)||0;
@@ -1025,11 +1056,15 @@ document.addEventListener('visibilitychange',async()=>{
 });
 window.addEventListener('beforeunload',e=>{if(dirty){cacheLocal(true);}});
 (async function init(){
-  renderTop();render();
+  try{renderTop();render();}catch(e){window.__bootFail&&window.__bootFail('開啟畫面失敗：'+(e.message||e)+'\n'+(e.stack||''));return;}
+  window.__booted=true;
   if(!HAS_GAS){setSync('bad','本機預覽');await refreshList();return;}
   await refreshList();
   const last=S.ui.project;
-  if(last&&PROJECTS.find(p=>p.id===last))await openProject(last);
+  if(last&&PROJECTS.find(p=>p.id===last)){
+    try{await openProject(last);}
+    catch(e){console.error(e);CUR={id:null,updated:0};S={...DEF(),ui:{...S.ui,project:null,view:'projects'}};saveUI();renderTop();render();setSync('bad','上次的作品開啟失敗');toast('上次的作品開啟失敗，請從書架重新開啟');}
+  }
   else{S.ui.view='projects';setSync('','請選擇作品');render();}
 })();
 </script>
